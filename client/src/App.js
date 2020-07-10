@@ -3,6 +3,7 @@ import { Switch, Route } from "react-router-dom";
 import Header from "./components/header/header";
 import HomePage from "./pages/home.page";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import AlertMessage from "./components/alert/alert";
 
 const theme = createMuiTheme({
   palette: {
@@ -20,6 +21,7 @@ function App() {
     <Fragment>
       <MuiThemeProvider theme={theme}>
         <Header />
+        <AlertMessage />
         <Switch>
           <Route path="/" component={HomePage} />
         </Switch>

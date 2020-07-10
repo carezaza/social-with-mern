@@ -7,7 +7,9 @@ import FormSubmit from "../form-submit/form-submit";
 const RegisterForm = ({ handleClose }) => {
   const methods = useForm();
   const { handleSubmit, control } = methods;
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => {
+    console.log(data);
+  };
   return (
     <FormSubmit handleClose={handleClose} handleSubmit={handleSubmit(onSubmit)}>
       <Typography variant="h5" align="center">
@@ -20,6 +22,8 @@ const RegisterForm = ({ handleClose }) => {
         control={control}
         style={{ margin: "10px 0" }}
         defaultValue=""
+        type="text"
+        required
       />
       <Controller
         as={TextField}
@@ -28,6 +32,8 @@ const RegisterForm = ({ handleClose }) => {
         control={control}
         style={{ margin: "10px 0" }}
         defaultValue=""
+        type="email"
+        required
       />
       <Controller
         as={TextField}
@@ -36,6 +42,7 @@ const RegisterForm = ({ handleClose }) => {
         style={{ margin: "10px 0" }}
         control={control}
         defaultValue=""
+        required
       />
       <Controller
         as={TextField}
@@ -44,6 +51,7 @@ const RegisterForm = ({ handleClose }) => {
         style={{ margin: "10px 0" }}
         control={control}
         defaultValue=""
+        required
       />
       <Button
         type="submit"

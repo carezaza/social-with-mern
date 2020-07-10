@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Button } from "@material-ui/core";
 import LoginForm from "../components/login-form/login-form";
 import RegisterForm from "../components/register-form/register-form";
-import BackgroundImage from '../assets/bg-home1920.png'
+import BackgroundImage from "../assets/bg-home1920.png";
 
 const HomePageContainer = styled.div`
   position: fixed;
@@ -77,5 +77,6 @@ const renderForm = (showform, setShowForm) => {
       );
   }
 };
+
 
 export default HomePage;
