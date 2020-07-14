@@ -1,7 +1,7 @@
 import AlertTypes from "./alert.types";
-import { INITIAL_STATE } from "./alert.reducer";
 import { v4 as uuidv4 } from "uuid";
 
+//typeAlert must be [ error, warning, info, success ]
 export const SetAlert = ({ message, type }) => (dispatch) => {
   const id = uuidv4();
   dispatch({
@@ -9,7 +9,7 @@ export const SetAlert = ({ message, type }) => (dispatch) => {
     payload: { id, message, type },
   });
 
-  setTimeout(() => dispatch(RemoveAlert(id)), 2000);
+  setTimeout(() => dispatch(RemoveAlert(id)), 3000);
 };
 
 export const RemoveAlert = (id) => ({

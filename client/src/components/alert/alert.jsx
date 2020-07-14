@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import styled from "styled-components";
 import { Alert, AlertTitle } from "@material-ui/lab";
@@ -15,7 +15,7 @@ const AlertBox = styled(Alert)`
   animation: slide 0.5s ease;
   @keyframes slide {
     from {
-      transform: translateY(400%);
+      transform: translateY(200%);
     }
   }
 `;
@@ -31,12 +31,12 @@ const useStyles = makeStyles((theme) => ({
 
 const AlertMessage = ({ alerts }) => {
   const classes = useStyles();
-  console.log(alerts.length)
   if (alerts.length < 1) return null;
   return (
     <AlertContainer>
       {alerts.map((alert) => (
         <AlertBox
+          key={alert.id}
           variant="outlined"
           severity={alert.type}
           className={classes.alert}

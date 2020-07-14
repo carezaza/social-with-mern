@@ -1,35 +1,21 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
 import styled from "styled-components";
 import { Button } from "@material-ui/core";
-import LoginForm from "../components/login-form/login-form";
-import RegisterForm from "../components/register-form/register-form";
-import BackgroundImage from "../assets/bg-home1920.png";
+import LoginForm from "../../components/login-form/login-form";
+import RegisterForm from "../../components/register-form/register-form";
+
+import Spinner from "../../components/spinner/spinner";
+import Feed from "../feed/feed.page";
+import axios from "axios";
 
 const HomePageContainer = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
   display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  background-image: url(${BackgroundImage});
-  background-size: 100% 100%;
-  background-position: center;
-  background-repeat: no-repeat;
-`;
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-self: center;
-  margin: auto;
-  padding: 15px 20px;
-  border-radius: 5px;
+  height: calc(100vh - 64px);
 `;
 
 const ButtonContainer = styled.div`
-  animation: expand 0.2s ease;
+  animation: expand 0.3s ease;
   @keyframes expand {
     from {
       transform: scale(0);
@@ -37,17 +23,28 @@ const ButtonContainer = styled.div`
   }
 `;
 
-const HomePage = () => {
+const HomePage = ({ isPendingAuth, match, auth }) => {
   const [showForm, setShowForm] = useState("");
+
   return (
     <HomePageContainer>
-      <Container>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          {renderForm(showForm, setShowForm)}
-        </div>
-      </Container>
+      {isPendingAuth ? (
+        <Spinner />
+      ) : (
+        renderContent({ auth, showForm, setShowForm, match })
+      )}
     </HomePageContainer>
   );
+};
+
+const renderContent = ({ auth, showForm, setShowForm, match }) => {
+  if (auth) {
+    return <Feed match={match} />;
+  } else {
+    return (
+      <div style={{ margin: "auto" }}>{renderForm(showForm, setShowForm)}</div>
+    );
+  }
 };
 
 const renderForm = (showform, setShowForm) => {
@@ -78,5 +75,9 @@ const renderForm = (showform, setShowForm) => {
   }
 };
 
+const mapStateToProps = (state) => ({
+  isPendingAuth: state.authReducer.isPending,
+  auth: state.authReducer.auth,
+});
 
-export default HomePage;
+export default connect(mapStateToProps)(HomePage);

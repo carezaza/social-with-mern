@@ -7,10 +7,10 @@ const FormSubmitContainer = styled.form`
   display: flex;
   flex-direction: column;
   padding: 15px 20px;
-  width: 250px;
+  width: 300px;
   border-radius: 5px;
-  animation: expand 0.2s ease;
-  background-color: rgba(255, 255, 255, 0.25);
+  background-color: rgba(255, 255, 255, 0.5);
+  animation: expand 0.3s ease;
   @keyframes expand {
     from {
       transform: scale(0);

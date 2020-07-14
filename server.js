@@ -1,22 +1,22 @@
 const { config } = require("dotenv");
 config();
 const express = require("express");
-const bodyParser = require("body-parser");
-const compression = require("compression");
-const morgan = require("morgan");
+const useMiddleWares = require("./config/use-middleWares");
+const connectMongoDb = require('./config/mongoose');
 
 const app = express();
+const { PORT } = process.env;
 
-if (process.env.NODE_ENV === "production") {
-  app.use(compression());
-} else {
-  app.use(morgan("dev"));
-}
+// Connect mongoDb
+connectMongoDb();
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// Use middleWares
+useMiddleWares(app);
 
+// Use Routes
+app.use("/auth", require("./routes/users.routes"));
 
+// Server static assets if in production
 if (process.env.NODE_ENV === "production") {
   // Set static folder
   app.use(express.static("client/build"));
@@ -26,5 +26,4 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`));
