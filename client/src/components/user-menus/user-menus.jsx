@@ -3,9 +3,9 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import { IconButton, Badge } from "@material-ui/core/";
-import AccountDropdown from "../account-dropdown/account-dropdown";
-import MailsDropdown from "../mails-dropdown/mails-dropdown";
-import NotificationsDropdown from "../notifications-dropdown/notifications-dropdown";
+import AccountDropdown from "./account-dropdown";
+import MailsDropdown from "./mails-dropdown";
+import NotificationsDropdown from "./notifications-dropdown";
 import SearchInput from "../search-input/search-input";
 import { connect } from "react-redux";
 

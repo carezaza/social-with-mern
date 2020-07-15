@@ -12,6 +12,13 @@ const ProfileSchema = new Schema({
   avatar: {
     type: String,
   },
+  background: {
+    type: String,
+  },
+  status: {
+    type: String,
+    required: true,
+  },
   following: [
     {
       user: {
@@ -36,6 +43,30 @@ const ProfileSchema = new Schema({
       },
     },
   ],
+  social: {
+    youtube: {
+      type: String,
+    },
+    twitter: {
+      type: String,
+    },
+    facebook: {
+      type: String,
+    },
+    linkedin: {
+      type: String,
+    },
+    instagram: {
+      type: String,
+    },
+    line: {
+      type: String,
+    },
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 module.exports = model("profiles", ProfileSchema);

@@ -6,6 +6,7 @@ import FullscreenIcon from "@material-ui/icons/Fullscreen";
 import FullscreenExitIcon from "@material-ui/icons/FullscreenExit";
 import UserPanel from "../../components/user-panel/user-panel";
 import Posts from "../../components/posts/posts";
+import Profile from "../../components/profile/profile";
 
 const FeedContainer = styled.div`
   display: flex;
@@ -13,8 +14,8 @@ const FeedContainer = styled.div`
   margin: auto;
   width: ${({ expand }) => (expand ? "100%" : "80%")};
   height: ${({ expand }) => (expand ? "100%" : "90%")};
-  background-color: rgba(255, 255, 255, 0.5);
   transition: all 0.3s ease;
+  background-color: #e5e5e5;
   animation: expand 0.3s ease;
   @keyframes expand {
     from {
@@ -26,7 +27,7 @@ const FeedContainer = styled.div`
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   width: 100%;
   height: 100%;
   overflow-x: hidden;
@@ -35,15 +36,16 @@ const Container = styled.div`
 
 const FeedBox = styled.div`
   width: 100%;
+  max-width: 900px;
+  margin: auto;
   height: 100%;
 `;
 
 //match path is '/'
 const Feed = ({ match }) => {
-  const [expand, setExpand] = useState(false);
+  const [expand, setExpand] = useState(true);
   return (
     <FeedContainer expand={expand}>
-      <UserPanel />
       <Container>
         <IconButton
           size="small"
@@ -54,13 +56,14 @@ const Feed = ({ match }) => {
         </IconButton>
         <FeedBox>
           <Switch>
-            <Route exact path={`${match.path}`} component={Posts} /> 
+            <Route exact path={`${match.path}`} component={Posts} />
+            <Route exact path={`${match.path}profile`} component={Profile} />
           </Switch>
         </FeedBox>
       </Container>
+      <UserPanel />
     </FeedContainer>
   );
 };
-
 
 export default Feed;

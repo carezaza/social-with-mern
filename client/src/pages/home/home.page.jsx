@@ -7,7 +7,6 @@ import RegisterForm from "../../components/register-form/register-form";
 
 import Spinner from "../../components/spinner/spinner";
 import Feed from "../feed/feed.page";
-import axios from "axios";
 
 const HomePageContainer = styled.div`
   display: flex;

@@ -30,10 +30,11 @@ const useStyles = makeStyles((theme) => ({
 const UserPanelContainer = styled.div`
   padding: 10px;
   width: ${({ expand }) => (expand ? "300px" : "50px")};
-  background-color: rgba(255, 255, 255, 0.9);
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
+  background-color: white;
+  border: 1px solid grey;
 `;
 
 const LinkStyle = styled(Link)`
@@ -52,10 +53,10 @@ const UserPanel = () => {
     <UserPanelContainer expand={expand}>
       <IconButton
         size="small"
-        style={{ marginLeft: "auto" }}
+        style={{ marginRight: "auto" }}
         onClick={() => setExpand(!expand)}
       >
-        {expand ? <ArrowBackIcon /> : <ArrowForwardIcon />}
+        {expand ?  <ArrowForwardIcon/> : <ArrowBackIcon />}
       </IconButton>
       {expand && (
         <Fragment>
