@@ -163,7 +163,7 @@ router.post("/logout", async (req, res) => {
     }
 
     user.tokenVersion = user.tokenVersion + 1;
-    user.save();
+    await user.save();
     res.clearCookie(process.env.REFRESH_TOKEN_NAME);
     res.send({ success: "Logout successfully." });
   } catch (error) {

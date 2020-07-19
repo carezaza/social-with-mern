@@ -73,7 +73,7 @@ router.post("/edit/photo", isAuthenticated, photoProfile, async (req, res) => {
 
 router.post("/edit/social", isAuthenticated, async (req, res) => {
   try {
-    const { social } = req.body;
+    const { social } = req.body;  
     await ProfileModel.findOneAndUpdate(
       { user: req.user.id },
       { $set: { social: social } }
