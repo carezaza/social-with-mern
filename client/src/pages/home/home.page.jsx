@@ -37,7 +37,7 @@ const HomePage = ({ isPendingAuth, match, auth }) => {
 };
 
 const renderContent = ({ auth, showForm, setShowForm, match }) => {
-  if (auth) {
+  if (auth ) {
     return <Feed match={match} />;
   } else {
     return (

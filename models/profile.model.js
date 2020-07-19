@@ -4,20 +4,29 @@ const ProfileSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: "users",
+    required: true,
+  },
+  firstName: {
+    type: String,
+    unique: true,
+    trim: true,
+    required: true,
+  },
+  lastName: {
+    type: String,
+    unique: true,
+    trim: true,
+    required: true,
   },
   bio: {
     type: String,
-    maxlength: 100,
+    maxlength: 200,
   },
   avatar: {
     type: String,
   },
   background: {
     type: String,
-  },
-  status: {
-    type: String,
-    required: true,
   },
   following: [
     {
@@ -59,7 +68,10 @@ const ProfileSchema = new Schema({
     instagram: {
       type: String,
     },
-    line: {
+    website: {
+      type: String,
+    },
+    githup: {
       type: String,
     },
   },

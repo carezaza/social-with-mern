@@ -10,7 +10,6 @@ import SearchInput from "../search-input/search-input";
 import { connect } from "react-redux";
 
 const UserMenus = ({ auth }) => {
-
   const [accAnchorEl, setAccAnchorEl] = useState(null);
   const [notifyAnchorEl, setNotifyAnchorEl] = useState(null);
   const [mailAnchorEl, setMailAnchorEl] = useState(null);
@@ -18,7 +17,7 @@ const UserMenus = ({ auth }) => {
   return (
     <Fragment>
       <SearchInput />
-      <IconButton
+      {/* <IconButton
         aria-label="show Mails"
         color="inherit"
         onClick={(event) => setMailAnchorEl(event.currentTarget)}
@@ -35,7 +34,7 @@ const UserMenus = ({ auth }) => {
         <Badge badgeContent={0} color="secondary">
           <NotificationsIcon style={{ color: "white" }} />
         </Badge>
-      </IconButton>
+      </IconButton> */}
       <IconButton
         aria-label="account of current user"
         color="inherit"

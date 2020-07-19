@@ -6,11 +6,15 @@ import {
   Button,
   CardHeader,
   TextareaAutosize,
-  Typography,
 } from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
 import PhotoIcon from "@material-ui/icons/Photo";
 import styled from "styled-components";
+import axios from "axios";
+import { checkFile } from "../../utiles/file";
+import { SetAlert } from "../../redux/alert/alert.actions";
+import { CreatePostStart } from "../../redux/post/post.actions";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles({
   card: {
@@ -38,22 +42,55 @@ const TextArea = styled(TextareaAutosize)`
   resize: none;
 `;
 
-const CreatePost = () => {
+const CreatePost = ({ SetAlert, CreatePostStart, auth }) => {
   const classes = useStyles();
-  const [image, setImage] = React.useState(null);
+  const [photo, setPhoto] = React.useState(null);
   const [content, setContent] = React.useState("");
 
-  const handlePost = () => {
-    if (!content) return;
-    console.log('create post start... ');
+  const handlePost = async () => {
+    if (!content.trim() && !photo) return;
+    const formData = new FormData();
+    if (photo) formData.append("photo", photo);
+    if (content) formData.append("content", content);
+    CreatePostStart(formData);
+    setPhoto(null);
+    setContent("");
+  };
+
+  const handleSetFile = (e) => {
+    const { files } = e.target;
+    try {
+      const errors = checkFile(files[0]);
+
+      if (!errors) {
+        setPhoto(files[0]);
+      } else {
+        if (errors.size) {
+          SetAlert({
+            message: "Image size should be less than 10mb.",
+            type: "warning",
+          });
+        }
+        if (errors.type) {
+          SetAlert({
+            message: "Image type should be only jpg, jpeg and png.",
+            type: "warning",
+          });
+        }
+      }
+    } catch {}
   };
 
   return (
     <Card className={classes.card}>
       <CardHeader title="Create post" />
       <CardContent style={{ padding: 10 }}>
-        {image ? (
-          <img className={classes.media} src={URL.createObjectURL(image)} />
+        {photo ? (
+          <img
+            alt=""
+            className={classes.media}
+            src={URL.createObjectURL(photo)}
+          />
         ) : null}
         <TextArea
           placeholder="Write..."
@@ -69,7 +106,6 @@ const CreatePost = () => {
 
         <Button
           variant="contained"
-          color="secondary"
           size="small"
           startIcon={<PhotoIcon />}
           component="label"
@@ -77,8 +113,9 @@ const CreatePost = () => {
           Photo
           <input
             type="file"
+            accept="image/*"
             style={{ display: "none" }}
-            onChange={(e) => setImage(e.target.files[0])}
+            onChange={handleSetFile}
           />
         </Button>
       </CardContent>
@@ -98,4 +135,10 @@ const CreatePost = () => {
   );
 };
 
-export default CreatePost;
+const mapStateToProps = (state) => ({
+  auth: state.authReducer.auth,
+});
+
+export default connect(mapStateToProps, { SetAlert, CreatePostStart })(
+  CreatePost
+);

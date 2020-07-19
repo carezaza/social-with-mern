@@ -5,9 +5,15 @@ const ProfileSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "users",
   },
+  profile: {
+    type: Schema.Types.ObjectId,
+    ref: "profiles",
+  },
+  photo: {
+    type: String,
+  },
   content: {
     type: String,
-    required: true,
   },
   likes: [
     {

@@ -5,6 +5,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers";
 import { connect } from "react-redux";
 import { LoginStart } from "../../redux/auth/auth.actions";
+import { useHistory } from "react-router";
 
 import FormSubmit from "../form-submit/form-submit";
 
@@ -20,11 +21,12 @@ const LoginSchema = yup.object().shape({
 });
 
 const LoginForm = ({ handleClose, LoginStart }) => {
+  const history = useHistory();
   const { handleSubmit, register, errors } = useForm({
     resolver: yupResolver(LoginSchema),
   });
   const onSubmit = async (data) => {
-    LoginStart(data);
+    LoginStart({...data, history});
   };
   return (
     <FormSubmit handleClose={handleClose} handleSubmit={handleSubmit(onSubmit)}>

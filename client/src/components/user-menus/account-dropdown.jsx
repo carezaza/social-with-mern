@@ -8,23 +8,27 @@ import styled from "styled-components";
 
 const LinkStyle = styled(Link)`
   text-decoration: none;
-  color:inherit;
+  color: inherit;
 `;
 
-const AccountDropdown = ({ anchorEl, handleClose, LogoutStart }) => {
+const AccountDropdown = ({ anchorEl, handleClose, LogoutStart ,auth }) => {
   const handleLogout = () => {
     LogoutStart();
     handleClose();
   };
   return (
     <DropdownMenu anchorEl={anchorEl} handleClose={handleClose}>
-      <LinkStyle to="/profile">
+      <LinkStyle to={`/profile/${auth.sub}`}>
         <MenuItem onClick={handleClose}>Profile</MenuItem>
       </LinkStyle>
-      <MenuItem>My account</MenuItem>
+      <MenuItem>Settings</MenuItem>
       <MenuItem onClick={handleLogout}>Logout</MenuItem>
     </DropdownMenu>
   );
 };
 
-export default connect(null, { LogoutStart })(AccountDropdown);
+const mapStateToProps = (state) => ({
+  auth: state.authReducer.auth,
+});
+
+export default connect(mapStateToProps, { LogoutStart })(AccountDropdown);

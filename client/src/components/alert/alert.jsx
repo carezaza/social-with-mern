@@ -8,7 +8,7 @@ const AlertContainer = styled.div`
   position: fixed;
   top: 70px;
   right: 10px;
-  z-index: 1;
+  z-index: 99999999;
 `;
 
 const AlertBox = styled(Alert)`
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   alert: {
     margin: 10,
     minWidth: 280,
-    backgroundColor: "rgba(255,255,255,0.6)",
+    backgroundColor: "white",
     maxWidth: 280,
   },
 }));

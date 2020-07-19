@@ -1,20 +1,6 @@
 const { Schema, model } = require("mongoose");
 
 const UserSchema = new Schema({
-  firstName: {
-    type: String,
-    unique: true,
-    trim: true,
-    lowercase: true,
-    required: true,
-  },
-  lastName: {
-    type: String,
-    unique: true,
-    trim: true,
-    lowercase: true,
-    required: true,
-  },
   email: {
     type: String,
     unique: true,
@@ -32,7 +18,7 @@ const UserSchema = new Schema({
   },
   role: {
     type: String,
-    enum: ["CLIENT", "ADMINISTRATOR", "SUPERUSER"],
+    enum: ["CLIENT", "ADMINISTRATOR"],
     default: "CLIENT",
   },
   tokenVersion: {

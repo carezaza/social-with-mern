@@ -1,5 +1,6 @@
-import React from "react";
+import React, { Fragment, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { Link } from "react-router-dom";
 import {
   Card,
   Avatar,
@@ -10,14 +11,20 @@ import {
   Collapse,
   IconButton,
   Typography,
-  Divider,
+  Menu,
+  MenuItem,
+  List,
 } from "@material-ui/core/";
-import ThumbUpIcon from "@material-ui/icons/ThumbUp";
+import FavoriteIcon from "@material-ui/icons/Favorite";
 import CommentIcon from "@material-ui/icons/Comment";
 import styled from "styled-components";
-
 import CommentItem from "../comment-item/comment-item";
+import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import CreateComment from "../create-comment/create-comment";
+import DialogOkCancel from "../dialog-ok-cancel/dialog-ok-cancel";
+import { timeSince } from "../../utiles/time";
+import { connect } from "react-redux";
+import { DeletePost, LikeStart } from "../../redux/post/post.actions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,6 +35,11 @@ const useStyles = makeStyles((theme) => ({
   media: {
     height: 0,
     paddingTop: "56.25%", // 16:9
+  },
+  ListStlye: {
+    width: "100%",
+    backgroundColor: theme.palette.background.paper,
+    padding: 0,
   },
   expand: {
     transform: "rotate(0deg)",
@@ -61,62 +73,131 @@ const ButtonName = styled.button`
   background: transparent;
   cursor: pointer;
   font-size: 16px;
-  padding:0;
-  margin:0;
+  padding: 0;
+  margin: 0;
   &:hover {
     text-decoration: underline;
   }
 `;
 
-const PostItem = () => {
+const PostItem = ({ post, auth, DeletePost, LikeStart }) => {
+  // useEffect(() => {
+  //   let oldLiked =
+  //     post && post.likes && !!post.likes.find((l) => l.user === auth.sub);
+
+  //   return () => {
+  //     let newLiked =
+  //       post && post.likes && !!post.likes.find((l) => l.user === auth.sub);
+  //     if (oldLiked !== newLiked) {
+  //       LikeStart(post._id);
+  //     }
+  //   };
+  // }, [LikeStart]);
+
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(true);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [openDel, setOpenDel] = React.useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
   const handleLike = () => {
-    console.log("Like start or unlike start");
+    LikeStart(post._id);
   };
 
+  const handleDelete = () => {
+    DeletePost(post._id);
+    setOpenDel(false);
+  };
+
+  if (!post) return null;
   return (
     <Card className={classes.root}>
       <CardHeader
         avatar={
-          <Avatar aria-label="recipe" className={classes.avatar}>
-            R
-          </Avatar>
+          <Avatar
+            src={post.profile.avatar}
+            aria-label="recipe"
+            className={classes.avatar}
+          />
         }
-        title={<ButtonName>John Smith</ButtonName>}
-        subheader="September 14, 2016"
+        title={
+          <Link to={`/profile/${post.user}`}>
+            <ButtonName>
+              {post.profile.firstName + " " + post.profile.lastName}
+            </ButtonName>
+          </Link>
+        }
+        subheader={timeSince(new Date(post.postedAt))}
+        action={
+          post.user === auth.sub && (
+            <Fragment>
+              <IconButton
+                Button
+                aria-label="settings"
+                onClick={(e) => setAnchorEl(e.currentTarget)}
+              >
+                <MoreHorizIcon />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={() => setAnchorEl(null)}
+                style={{ marginTop: 35, marginLeft: -40 }}
+              >
+                <MenuItem onClick={() => setOpenDel(true)}>Delete</MenuItem>
+              </Menu>
+              <DialogOkCancel
+                title="Delete Post"
+                content="Are you sure to delete this post?"
+                open={openDel}
+                handleCancel={() => setOpenDel(false)}
+                handleOk={handleDelete}
+              />
+            </Fragment>
+          )
+        }
       />
-      <CardMedia
-        className={classes.media}
-        image="https://www.sony.co.th/image/bc6d25fa6371c2899ce704a2bed7614c?fmt=png-alpha&wid=960"
-        title="ImagePost"
-      />
-      <CardContent>
-        <Typography variant="body2" color="textPrimary" component="p">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the
-          mussels, if you like.
-        </Typography>
-      </CardContent>
+      {post.photo && (
+        <CardMedia
+          className={classes.media}
+          image={post.photo}
+          title="ImagePost"
+        />
+      )}
+
+      {post.content && (
+        <CardContent>
+          <Typography variant="body2" color="textPrimary" component="p">
+            {post.content}
+          </Typography>
+        </CardContent>
+      )}
 
       <div style={{ textAlign: "right", marginRight: 20 }}>
-        <ButtonStyle aria-label="likes">
-          <Typography>0 Likes</Typography>{" "}
-        </ButtonStyle>
+        {post.likes.length > 0 && (
+          <ButtonStyle aria-label="likes">
+            <Typography>{post.likes.length} Likes</Typography>{" "}
+          </ButtonStyle>
+        )}
 
-        <ButtonStyle aria-label="Comments" onClick={handleExpandClick}>
-          <Typography>0 Comments</Typography>
-        </ButtonStyle>
+        {post.comments.length > 0 && (
+          <ButtonStyle aria-label="Comments" onClick={handleExpandClick}>
+            <Typography>{post.comments.length} Comments</Typography>
+          </ButtonStyle>
+        )}
       </div>
 
       <CardActions disableSpacing>
         <IconButton style={{ borderRadius: 0 }} onClick={handleLike}>
-          <ThumbUpIcon />
+          <FavoriteIcon
+            color={
+              post.likes.find((like) => like.user === auth.sub) && "secondary"
+            }
+          />
           <Typography style={{ marginLeft: 5 }}>Like</Typography>
         </IconButton>
         <IconButton style={{ borderRadius: 0 }} onClick={handleExpandClick}>
@@ -126,11 +207,26 @@ const PostItem = () => {
       </CardActions>
 
       <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CreateComment />
-        <CommentItem />
+        <CreateComment postId={post._id} />
+        {post.comments.length > 0 && (
+          <List className={classes.ListStlye}>
+            {post.comments.map((comment) => (
+              <CommentItem
+                key={comment._id}
+                comment={comment}
+                postId={post._id}
+                postUser={post.user}
+              />
+            ))}
+          </List>
+        )}
       </Collapse>
     </Card>
   );
 };
 
-export default PostItem;
+const mapStateToProps = (state) => ({
+  auth: state.authReducer.auth,
+});
+
+export default connect(mapStateToProps, { DeletePost, LikeStart })(PostItem);

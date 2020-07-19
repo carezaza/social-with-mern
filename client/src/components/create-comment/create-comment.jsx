@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { Avatar, TextareaAutosize } from "@material-ui/core/";
+import { CreateCommentStart } from "../../redux/post/post.actions";
+import { connect } from "react-redux";
 
 const TextArea = styled(TextareaAutosize)`
   width: 100%;
@@ -19,26 +21,41 @@ const CreateCommentContainer = styled.div`
   display: flex;
   flex-direction: row;
   padding: 5px;
-  border-bottom: 1px solid #cccccc;
 `;
 
-const CreateComment = () => {
-    
-  const [comment, setComment] = React.useState('');
+const CreateComment = ({ postId, CreateCommentStart, auth }) => {
+  const [comment, setComment] = React.useState("");
   const handleComment = (event) => {
     if (event.key === "Enter" && event.shiftKey) {
       return;
     }
     if (event.key === "Enter") {
-      console.log("Submit comment");
+      event.preventDefault();
+      if (!comment.trim()) {
+        return;
+      }
+      CreateCommentStart(postId, comment);
+      setComment("");
     }
   };
   return (
     <CreateCommentContainer>
-      <Avatar style={{ background: "green", width: 35, height: 35 }}>C</Avatar>
-      <TextArea placeholder="Write..." onKeyPress={handleComment} value={comment} onChange={(e) => setComment(e.target.value)} />
+      <Avatar
+        src={auth.avatar && auth.avatar}
+        style={{ background: "green", width: 35, height: 35 }}
+      />
+      <TextArea
+        placeholder="Write..."
+        onKeyPress={handleComment}
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+      />
     </CreateCommentContainer>
   );
 };
 
-export default CreateComment;
+const mapStateToProps = (state) => ({
+  auth: state.authReducer.auth,
+});
+
+export default connect(mapStateToProps, { CreateCommentStart })(CreateComment);

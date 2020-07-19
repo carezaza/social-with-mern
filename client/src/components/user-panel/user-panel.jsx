@@ -16,8 +16,7 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import SettingsIcon from "@material-ui/icons/Settings";
-import MessageIcon from "@material-ui/icons/Message";
-import AvatarBroke from "../../assets/avatar-broke.png";
+import WebIcon from "@material-ui/icons/Web";
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -33,8 +32,7 @@ const UserPanelContainer = styled.div`
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
-  background-color: white;
-  border: 1px solid grey;
+  background-color: ${({ expand }) => (expand ? "white" : "transparent")};
 `;
 
 const LinkStyle = styled(Link)`
@@ -46,50 +44,62 @@ const LinkStyle = styled(Link)`
   }
 `;
 
-const UserPanel = () => {
+const UserPanel = ({ auth }) => {
   const classes = useStyles();
   const [expand, setExpand] = useState(true);
   return (
     <UserPanelContainer expand={expand}>
       <IconButton
         size="small"
-        style={{ marginRight: "auto" }}
+        style={{ marginLeft: "auto" }}
         onClick={() => setExpand(!expand)}
       >
-        {expand ?  <ArrowForwardIcon/> : <ArrowBackIcon />}
+        {expand ? <ArrowBackIcon /> : <ArrowForwardIcon />}
       </IconButton>
       {expand && (
         <Fragment>
           <Avatar
             alt="avatarProfile"
-            src={AvatarBroke}
+            src={auth.avatar && auth.avatar}
             className={classes.avatar}
           />
-          <LinkStyle to="/profile">
-            <Typography align="center">Hello, John Smith</Typography>
+          <LinkStyle to={`/profile/${auth.sub}`}>
+            <Typography align="center" style={{ textTransform: "capitalize" }}>
+              Hello, {auth.firstName + " " + auth.lastName}
+            </Typography>
           </LinkStyle>
 
           <List style={{ marginTop: "10px" }}>
-            <Link to="/" style={{textDecoration:'none', color:'inherit'}}>
+            <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
               <ListItem button>
                 <ListItemIcon>
-                  <AccountBoxIcon />
+                  <WebIcon />
                 </ListItemIcon>
                 <ListItemText primary="News Feed" />
               </ListItem>
             </Link>
-            <ListItem button>
-              <ListItemIcon>
-                <MessageIcon />
-              </ListItemIcon>
-              <ListItemText primary="Inbox" />
-            </ListItem>
-            <ListItem button>
-              <ListItemIcon>
-                <SettingsIcon />
-              </ListItemIcon>
-              <ListItemText primary="Settings" />
-            </ListItem>
+            <Link
+              to={`/profile/${auth.sub}`}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <ListItem button>
+                <ListItemIcon>
+                  <AccountBoxIcon />
+                </ListItemIcon>
+                <ListItemText primary="My Profile" />
+              </ListItem>
+            </Link>
+            <Link
+              to="/settings"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <ListItem button>
+                <ListItemIcon>
+                  <SettingsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Settings" />
+              </ListItem>
+            </Link>
             <ListItem button>
               <ListItemIcon>
                 <ExitToAppIcon />

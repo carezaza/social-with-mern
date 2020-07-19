@@ -10,7 +10,7 @@ export const RegisterStart = ({ firstName, lastName, email, password }) => (
   dispatch({ type: AuthActionTypes.REGISTER_START });
 
   axios
-    .post("/auth/register", {
+    .post("/api/auth/register", {
       firstName,
       lastName,
       email,
@@ -33,29 +33,28 @@ export const RegisterStart = ({ firstName, lastName, email, password }) => (
     });
 };
 
-export const LoginStart = ({ email, password }) => (dispatch) => {
+export const LoginStart = ({ email, password, history }) => async (
+  dispatch
+) => {
   dispatch({ type: AuthActionTypes.LOGIN_START });
-
-  axios
-    .post("/auth/login", {
-      email,
-      password,
-    })
-    .then((res) => {
-      const token = res.headers["authorization"];
-      localStorage.setItem("jwt", token);
-      setAuthToken(token);
-      const decoded = jwt_decode(token);
-      dispatch(SetCurrentUser(decoded));
-      dispatch({ type: AuthActionTypes.LOGIN_SUCCESS });
-      dispatch(SetAlert({ message: res.data.success, type: "success" }));
-    })
-    .catch((err) => {
-      localStorage.clear("jwt");
-      setAuthToken(false);
-      dispatch({ type: AuthActionTypes.LOGIN_FAILURE });
-      dispatch(SetAlert({ message: err.response.data.error, type: "error" }));
-    });
+  try {
+    const auth = await axios.post("/api/auth/login", { email, password });
+    const token = auth.headers["authorization"];
+    localStorage.setItem("jwt", token);
+    setAuthToken(token);
+    const decoded = jwt_decode(token);
+    dispatch(SetCurrentUser(decoded));
+    history.push("/");
+    dispatch({ type: AuthActionTypes.LOGIN_SUCCESS });
+    dispatch(SetAlert({ message: auth.data.success, type: "success" }));
+  } catch (error) {
+    dispatch({ type: AuthActionTypes.LOGIN_FAILURE });
+    // localStorage.removeItem("jwt");
+    // setAuthToken(false);
+    if (error.response.data.error) {
+      dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
+    }
+  }
 };
 
 export const SetCurrentUser = (user) => ({
@@ -66,13 +65,28 @@ export const SetCurrentUser = (user) => ({
 export const LogoutStart = () => async (dispatch) => {
   try {
     dispatch({ type: AuthActionTypes.LOGOUT_START });
-    const res = await axios.post("/auth/logout");
-    localStorage.clear("jwt");
+    const res = await axios.post("/api/auth/logout");
+    localStorage.removeItem("jwt");
     setAuthToken(false);
     dispatch({ type: AuthActionTypes.LOGOUT_SUCCESS });
     dispatch(SetAlert({ message: res.data.success, type: "success" }));
   } catch (err) {
     dispatch({ type: AuthActionTypes.LOGOUT_FAILURE });
-    dispatch(SetAlert({ message: err.response.data.message, type: "error" }));
+    dispatch(SetAlert({ message: err.response.data.error, type: "error" }));
+  }
+};
+
+export const LoginIfRefresh = (decoded) => async (dispatch) => {
+  dispatch({ type: AuthActionTypes.LOGIN_START });
+  try {
+    dispatch(SetCurrentUser(decoded));
+    dispatch({ type: AuthActionTypes.LOGIN_SUCCESS });
+  } catch (error) {
+    dispatch({ type: AuthActionTypes.LOGIN_FAILURE });
+    // localStorage.removeItem("jwt");
+    // setAuthToken(false);
+    // if (error.response.data.error) {
+    //   dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
+    // }
   }
 };

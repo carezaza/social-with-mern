@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Switch, Route } from "react-router-dom";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 import { IconButton } from "@material-ui/core";
 import FullscreenIcon from "@material-ui/icons/Fullscreen";
@@ -7,6 +8,7 @@ import FullscreenExitIcon from "@material-ui/icons/FullscreenExit";
 import UserPanel from "../../components/user-panel/user-panel";
 import Posts from "../../components/posts/posts";
 import Profile from "../../components/profile/profile";
+import { connect } from "react-redux";
 
 const FeedContainer = styled.div`
   display: flex;
@@ -27,7 +29,7 @@ const FeedContainer = styled.div`
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: flex-end;
   width: 100%;
   height: 100%;
   overflow-x: hidden;
@@ -42,10 +44,11 @@ const FeedBox = styled.div`
 `;
 
 //match path is '/'
-const Feed = ({ match }) => {
+const Feed = ({ match, auth }) => {
   const [expand, setExpand] = useState(true);
   return (
     <FeedContainer expand={expand}>
+      <UserPanel auth={auth} />
       <Container>
         <IconButton
           size="small"
@@ -57,13 +60,24 @@ const Feed = ({ match }) => {
         <FeedBox>
           <Switch>
             <Route exact path={`${match.path}`} component={Posts} />
-            <Route exact path={`${match.path}profile`} component={Profile} />
+            <Route
+              exact
+              path={`${match.path}profile/:id`}
+              component={Profile}
+            />
           </Switch>
         </FeedBox>
       </Container>
-      <UserPanel />
     </FeedContainer>
   );
 };
 
-export default Feed;
+Feed.propTypes = {
+  auth: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  auth: state.authReducer.auth,
+});
+
+export default connect(mapStateToProps)(Feed);

@@ -14,7 +14,9 @@ connectMongoDb();
 useMiddleWares(app);
 
 // Use Routes
-app.use("/auth", require("./routes/users.routes"));
+app.use("/api/auth", require("./routes/users.routes"));
+app.use("/api/profile", require("./routes/profile.routes"));
+app.use("/api/post", require("./routes/post.routes"));
 
 // Server static assets if in production
 if (process.env.NODE_ENV === "production") {

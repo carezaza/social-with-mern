@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 module.exports.genAccessToken = (payload) => {
   return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "1h",
+    expiresIn: "24h",
   });
 };
 

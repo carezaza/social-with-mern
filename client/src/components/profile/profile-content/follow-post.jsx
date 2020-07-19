@@ -18,7 +18,7 @@ const useStyles = makeStyles({
   },
 });
 
-const FollowPost = () => {
+const FollowPost = ({ following, followers , posts }) => {
   const classes = useStyles();
   return (
     <Card className={classes.card} style={{ marginTop: 10 }}>
@@ -28,19 +28,19 @@ const FollowPost = () => {
             <ListItemIcon>
               <PeopleIcon color="secondary" />
             </ListItemIcon>
-            <ListItemText secondary="Follower 123" />
+            <ListItemText secondary={`Followers ${followers.length}`} />
           </ListItem>
           <ListItem>
             <ListItemIcon>
               <RecentActorsIcon color="secondary" />
             </ListItemIcon>
-            <ListItemText secondary="Following 123" />
+            <ListItemText secondary={`Following ${following.length}`} />
           </ListItem>
           <ListItem>
             <ListItemIcon>
               <AssignmentIcon color="secondary" />
             </ListItemIcon>
-            <ListItemText secondary="Posted 123" />
+            <ListItemText secondary={`Posted ${posts}`}/>
           </ListItem>
         </List>
       </CardContent>
