@@ -13,6 +13,7 @@ import { connect } from "react-redux";
 import { SetAlert } from "../../redux/alert/alert.actions";
 import { checkFile } from "../../utiles/file";
 
+
 const Background = styled.div`
   width: 100%;
   height: 200px;
@@ -22,7 +23,7 @@ const Background = styled.div`
   background-image: ${({ Image }) => (Image ? `url(${Image})` : ``)};
   background-position: center;
   background-repeat: no-repeat;
-  background-size: 100% 100%;
+  background-size: 100% auto;
   border-radius: 5px;
 `;
 

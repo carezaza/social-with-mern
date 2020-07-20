@@ -3,6 +3,7 @@ import ProfileActionTypes from "./profile.types";
 const INITIAL_STATE = {
   profile: null,
   isPending: false,
+  people: [],
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -33,12 +34,18 @@ export default (state = INITIAL_STATE, action) => {
         isPending: false,
         profile: null,
       };
-    case ProfileActionTypes.EDIT_PHOTO_END:
+    case ProfileActionTypes.EDIT_PHOTO_FAILURE:
     case ProfileActionTypes.EDIT_SOCIAL_FAILURE:
     case ProfileActionTypes.FOLLOW_FAILURE:
       return {
         ...state,
         isPending: false,
+      };
+    case ProfileActionTypes.EDIT_PHOTO_SUCCESS:
+      return {
+        ...state,
+        isPending: false,
+        profile: { ...payload },
       };
     case ProfileActionTypes.EDIT_SOCIAL_SUCCESS:
       return {

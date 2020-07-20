@@ -4,57 +4,50 @@ import {
   CardContent,
   CardActions,
   Button,
+  CardMedia,
   CardHeader,
-  TextareaAutosize,
+  TextField,
 } from "@material-ui/core/";
 import { makeStyles } from "@material-ui/core/styles";
+import { useForm } from "react-hook-form";
 import PhotoIcon from "@material-ui/icons/Photo";
 import styled from "styled-components";
-import axios from "axios";
 import { checkFile } from "../../utiles/file";
 import { SetAlert } from "../../redux/alert/alert.actions";
 import { CreatePostStart } from "../../redux/post/post.actions";
 import { connect } from "react-redux";
+import ClearIcon from "@material-ui/icons/Clear";
 
 const useStyles = makeStyles({
   card: {
     width: "100%",
     maxWidth: 600,
     margin: "10px auto",
-    padding: 10,
   },
   media: {
-    width: "100%",
-    height: 325,
-    borderRadius: "5px",
+    height: 0,
+    paddingTop: "56.25%", // 16:9
   },
 });
 
-const TextArea = styled(TextareaAutosize)`
+const ContentField = styled(TextField)`
   width: 100%;
-  font-size: 16px;
-  font-family: inherit;
-  border: none;
-  outline: none;
-  border-radius: 3px;
-  border: 1px solid #ccc;
-  padding: 10px;
-  resize: none;
+  margin: 10px 0;
 `;
 
 const CreatePost = ({ SetAlert, CreatePostStart, auth }) => {
   const classes = useStyles();
+  const { handleSubmit, register, setValue } = useForm();
   const [photo, setPhoto] = React.useState(null);
-  const [content, setContent] = React.useState("");
 
-  const handlePost = async () => {
-    if (!content.trim() && !photo) return;
+  const onSubmit = async (data) => {
+    if (!data.content.trim() && !photo) return;
     const formData = new FormData();
     if (photo) formData.append("photo", photo);
-    if (content) formData.append("content", content);
+    if (data.content) formData.append("content", data.content);
     CreatePostStart(formData);
     setPhoto(null);
-    setContent("");
+    setValue("content", "");
   };
 
   const handleSetFile = (e) => {
@@ -83,16 +76,48 @@ const CreatePost = ({ SetAlert, CreatePostStart, auth }) => {
 
   return (
     <Card className={classes.card}>
-      <CardHeader title="Create post" />
-      <CardContent style={{ padding: 10 }}>
-        {photo ? (
-          <img
-            alt=""
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <CardHeader title="Create post" />{" "}
+        {photo && (
+          <div style={{ textAlign: "right" }}>
+            {" "}
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={<ClearIcon />}
+              style={{ margin: "10px 10px -50px 10px" }}
+              onClick={() => setPhoto(null)}
+            >
+              Clear photo
+            </Button>
+          </div>
+        )}
+        {photo && (
+          <CardMedia
             className={classes.media}
-            src={URL.createObjectURL(photo)}
+            image={photo && URL.createObjectURL(photo)}
+            title="Paella dish"
           />
-        ) : null}
-        <TextArea
+        )}
+        <CardContent style={{ padding: 10 }}>
+          <div
+            style={{
+              margin: 0,
+              padding: 0,
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          ></div>
+          {/* {photo ? (
+          <div className={classes.media}>
+            <img
+              alt=""
+              style={{ position: "absolute" }}
+              src={URL.createObjectURL(photo)}
+            />
+          </div>
+        ) : null} */}
+          {/* <TextArea
           placeholder="Write..."
           id="content"
           label="Content"
@@ -102,35 +127,46 @@ const CreatePost = ({ SetAlert, CreatePostStart, auth }) => {
           style={{ width: "100%", margin: "10px 0" }}
           value={content}
           onChange={(e) => setContent(e.target.value)}
-        />
-
-        <Button
-          variant="contained"
-          size="small"
-          startIcon={<PhotoIcon />}
-          component="label"
-        >
-          Photo
-          <input
-            type="file"
-            accept="image/*"
-            style={{ display: "none" }}
-            onChange={handleSetFile}
+        /> */}
+          <ContentField
+            multiline
+            rowsMax={10}
+            rows={2}
+            name="content"
+            variant="outlined"
+            inputRef={register}
+            autoComplete="off"
+            defaultValue=""
+            placeholder="What's on your mind?"
           />
-        </Button>
-      </CardContent>
-
-      <CardActions style={{ padding: 10 }}>
-        <Button
-          onClick={handlePost}
-          variant="contained"
-          color="primary"
-          size="small"
-          style={{ width: "100%" }}
-        >
-          Post
-        </Button>
-      </CardActions>
+          <Button
+            color="secondary"
+            variant="contained"
+            size="small"
+            startIcon={<PhotoIcon />}
+            component="label"
+          >
+            Photo
+            <input
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={handleSetFile}
+            />
+          </Button>
+        </CardContent>
+        <CardActions style={{ padding: 10 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            size="small"
+            style={{ width: "100%" }}
+          >
+            Post
+          </Button>
+        </CardActions>
+      </form>
     </Card>
   );
 };

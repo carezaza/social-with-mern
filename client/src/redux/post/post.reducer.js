@@ -8,7 +8,8 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
   const { payload, type } = action;
   switch (type) {
-    case PostActionTypes.FETCH_POST_START:
+    case PostActionTypes.FETCH_POSTS_PROFILE_START:
+    case PostActionTypes.FETCH_POSTS_HOME_START:
     case PostActionTypes.CREATE_POST_START:
     case PostActionTypes.DELETE_POST_START:
     case PostActionTypes.LIKE_POST_START:
@@ -23,6 +24,8 @@ export default (state = INITIAL_STATE, action) => {
     case PostActionTypes.LIKE_POST_FAILURE:
     case PostActionTypes.CREAT_COMMENT_FAILURE:
     case PostActionTypes.DELETE_COMMENT_FAILURE:
+    case PostActionTypes.FETCH_POSTS_PROFILE_FAILURE:
+    case PostActionTypes.FETCH_POSTS_HOME_FAILURE:
       return {
         ...state,
         isPending: false,
@@ -39,19 +42,15 @@ export default (state = INITIAL_STATE, action) => {
         posts: state.posts.filter((p) => p._id !== payload),
         isPending: false,
       };
-    case PostActionTypes.FETCH_POST_SUCCESS:
+    case PostActionTypes.FETCH_POSTS_PROFILE_SUCCESS:
+    case PostActionTypes.FETCH_POSTS_HOME_SUCCESS:
       return {
         ...state,
         posts: payload,
         isPending: false,
       };
-    case PostActionTypes.FETCH_POST_FAILURE:
-      return {
-        ...state,
-        isPending: false,
-        posts: null,
-      };
-    case PostActionTypes.CLEAR_POST:
+
+    case PostActionTypes.CLEAR_POSTS:
       return {
         ...state,
         posts: null,
@@ -83,9 +82,3 @@ export default (state = INITIAL_STATE, action) => {
       return state;
   }
 };
-
-function ReplacePost(posts, payload) {
-  const IndexItem = posts.map((post) => post._id).indexOf(payload._id);
-  posts[IndexItem] = { ...payload };
-  return [...posts];
-}

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const { body, validationResult } = require("express-validator");
+const fs = require("fs");
 
 // Utils and middleWares
 const { isAuthenticated } = require("../middlewares/auth");
@@ -63,10 +64,16 @@ router.post(
 
       const { id, tokenVersion } = user;
 
+      // const profilesPath = `${__dirname}/../client/public/uploads/profiles/${id}`;
+      // if (!fs.existsSync(`${profilesPath}`)) {
+      //   fs.mkdirSync(`${profilesPath}`);
+      // }
+
       await ProfileModel.create({
         user: id,
         firstName,
         lastName,
+        avatar: `/uploads/profiles/${id}/avatar.png`,
       });
 
       const accessToken = genAccessToken({
@@ -74,7 +81,7 @@ router.post(
         tokenVersion,
         firstName,
         lastName,
-        avatar: "",
+        avatar: `/uploads/profiles/${id}/avatar.png`,
       });
 
       const refreshToken = genRefreshToken({
@@ -82,7 +89,7 @@ router.post(
         tokenVersion,
         firstName,
         lastName,
-        avatar: "",
+        avatar: `/uploads/profiles/${id}/avatar.png`,
       });
 
       res.header(process.env.ACCESS_TOKEN_NAME, `Bearer ${accessToken}`);
@@ -127,7 +134,7 @@ router.post(
         tokenVersion,
         firstName,
         lastName,
-        avatar: profile.avatar ? profile.avatar : "",
+        avatar: profile.avatar && profile.avatar,
       });
 
       const refreshToken = genRefreshToken({
@@ -135,7 +142,7 @@ router.post(
         tokenVersion,
         firstName,
         lastName,
-        avatar: profile.avatar ? profile.avatar : "",
+        avatar: profile.avatar && profile.avatar,
       });
 
       res.header(process.env.ACCESS_TOKEN_NAME, `Bearer ${accessToken}`);

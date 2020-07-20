@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
+const mongoose = require("mongoose");
 
 // Utils and middleWares
 const { isAuthenticated } = require("../middlewares/auth");
@@ -8,6 +9,8 @@ const { isHasContent } = require("../middlewares/post");
 
 // Mongodb model
 const PostModel = require("../models/post.model");
+const ProfileModel = require("../models/profile.model");
+const { profile } = require("console");
 
 router.post("/create", isAuthenticated, isHasContent, async (req, res) => {
   try {
@@ -27,6 +30,13 @@ router.post("/create", isAuthenticated, isHasContent, async (req, res) => {
       post.content = req.content;
     }
 
+    await ProfileModel.updateMany(
+      {
+        following: { $elemMatch: { user: req.user.id } },
+      },
+      { $push: { notifications: { $each: [{ post: post.id }] } } }
+    );
+
     post
       .save()
       .then((p) =>
@@ -35,20 +45,6 @@ router.post("/create", isAuthenticated, isHasContent, async (req, res) => {
           .execPopulate()
       )
       .then((p) => res.send(p));
-  } catch (error) {
-    console.log(error);
-    res.status(400).send({ error: error.message });
-  }
-});
-
-router.post("/fetch/:id", isAuthenticated, async (req, res) => {
-  try {
-    const posts = await PostModel.find({ user: req.params.id })
-      .populate("profile", ["firstName", "lastName", "avatar"])
-      .sort({
-        postedAt: -1,
-      });
-    res.send(posts);
   } catch (error) {
     console.log(error);
     res.status(400).send({ error: error.message });
@@ -77,7 +73,7 @@ router.delete("/:postId", isAuthenticated, async (req, res) => {
 router.post("/like/:postId", isAuthenticated, async (req, res) => {
   try {
     const post = await PostModel.findById(req.params.postId);
-
+    if (!post) return res.status(400).send({ error: "Post not found." });
     if (post.likes.find((like) => like.user.toString() === req.user.id)) {
       // post.likes.filter((like) => like.user.toString() !== req.user.id);
       const removeIndex = post.likes
@@ -85,7 +81,12 @@ router.post("/like/:postId", isAuthenticated, async (req, res) => {
         .indexOf(req.user.id);
       post.likes.splice(removeIndex, 1);
     } else {
-      post.likes.unshift({ user: req.user.id });
+      post.likes.unshift({
+        user: req.user.id,
+        firstName: req.profile.firstName,
+        lastName: req.profile.lastName,
+        avatar: req.profile.avatar,
+      });
     }
     post.save().then((p) => res.send(p));
   } catch (error) {
@@ -99,8 +100,8 @@ router.post("/comment/:postId", isAuthenticated, async (req, res) => {
   if (!content) return res.status(400).send({ error: "No content commented." });
   try {
     const post = await PostModel.findById(req.params.postId);
-
-    post.comments.unshift({
+    if (!post) return res.status(400).send({ error: "Post not found." });
+    post.comments.push({
       user: req.user.id,
       content: content,
       firstName: req.profile.firstName,
@@ -121,6 +122,7 @@ router.delete(
   async (req, res) => {
     try {
       const post = await PostModel.findById(req.params.postId);
+      if (!post) return res.status(400).send({ error: "Post not found." });
       const comment = post.comments.find(
         (c) => c._id.toString() === req.params.commentId.toString()
       );
@@ -150,5 +152,35 @@ router.delete(
     }
   }
 );
+
+router.get("/fetch/:id", isAuthenticated, (req, res) => {
+  PostModel.find({ user: req.params.id })
+    .populate("profile", ["firstName", "lastName", "avatar"])
+    .sort({
+      postedAt: -1,
+    })
+    .limit(10)
+    .then((posts) => res.send(posts))
+    .catch((error) => {
+      console.log(error);
+      res.status(400).send({ error: error.message });
+    });
+});
+
+router.get("/", isAuthenticated, (_req, res) => {
+  PostModel.find()
+    .populate("profile", ["firstName", "lastName", "avatar"])
+    .sort({ postedAt: -1 })
+    .limit(10)
+    .then((posts) => res.send(posts))
+    .catch((error) => {
+      console.log(error);
+      res.status(400).send({ error: error.message });
+    });
+});
+
+router.get("/notifications", isAuthenticated, async (req, res) => {
+  res.send("notifications");
+});
 
 module.exports = router;

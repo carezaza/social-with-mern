@@ -9,11 +9,14 @@ const { photoProfile } = require("../middlewares/profile");
 // Mongodb model
 const ProfileModel = require("../models/profile.model");
 
-router.post("/who/:id", isAuthenticated, async (req, res) => {
+router.get("/who/:id", isAuthenticated, async (req, res) => {
   try {
-    const profile = await ProfileModel.findOne({ user: req.params.id });
+    const profile = await ProfileModel.findOne({
+      user: req.params.id,
+    }).populate("");
 
     if (!profile) return res.status(400).send({ error: "Profile not found" });
+
     res.json(profile);
   } catch (error) {
     res.status(400).send({ error: error.message });
@@ -36,7 +39,6 @@ router.post("/edit/bio", isAuthenticated, async (req, res) => {
 
 router.post("/edit/photo", isAuthenticated, photoProfile, async (req, res) => {
   try {
-    const profile = await ProfileModel.findOne({ user: req.user.id });
     const profilesPath = `${__dirname}/../client/public/uploads/profiles/${req.user.id}`;
     if (!fs.existsSync(`${profilesPath}`)) {
       fs.mkdirSync(`${profilesPath}`);
@@ -47,24 +49,14 @@ router.post("/edit/photo", isAuthenticated, photoProfile, async (req, res) => {
 
     if (req.background) {
       req.background.mv(`${profilesPath}/background.png`);
+      if (!req.profile.background) {
+        req.profile.background = `/uploads/profiles/${req.user.id}/background.png`;
+
+        await req.profile.save();
+      }
     }
 
-    if (!profile.avatar || !profile.background) {
-      profile.avatar = `/uploads/profiles/${req.user.id}/avatar.png`;
-      profile.background = `/uploads/profiles/${req.user.id}/background.png`;
-      // await ProfileModel.findOneAndUpdate(
-      //   { user: req.user.id },
-      //   {
-      //     $set: {
-      //       avatar: `/uploads/profiles/${req.user.id}/avatar.png`,
-      //       background: `/uploads/profiles/${req.user.id}/background.png`,
-      //     },
-      //   }
-      // );
-      await profile.save();
-    }
-
-    return res.send({ success: "Uploaded photo successfully." });
+    return res.send(req.profile);
   } catch (error) {
     console.log(error);
     res.status(500).send({ error: error.message });
@@ -73,7 +65,7 @@ router.post("/edit/photo", isAuthenticated, photoProfile, async (req, res) => {
 
 router.post("/edit/social", isAuthenticated, async (req, res) => {
   try {
-    const { social } = req.body;  
+    const { social } = req.body;
     await ProfileModel.findOneAndUpdate(
       { user: req.user.id },
       { $set: { social: social } }
@@ -98,36 +90,58 @@ router.post("/follow/:userId", isAuthenticated, async (req, res) => {
     //check for unFollowing if exist
     if (existMe) {
       const removeFollowerIndex = profile.followers
-        .map((f) => f.user.toString())
-        .indexOf(req.user.id.toString());
+        .map((f) => f.user)
+        .indexOf(req.user.id);
 
       profile.followers.splice(removeFollowerIndex, 1);
       await profile.save();
 
-      if (
-        req.profile.following.find(
-          (f) => f.user.toString() === profile.user.toString()
-        )
-      ) {
-        const removeFollowingIndex = req.profile.following
-          .map((f) => f.user.toString())
-          .indexOf(profile.user.toString());
-        req.profile.following.splice(removeFollowingIndex, 1);
+      const existP = req.profile.following.findIndex(
+        (f) => f.user === profile.user
+      );
+      if (existP) {
+        req.profile.following.splice(existP, 1);
         await req.profile.save();
       }
       return res.send(profile);
     }
 
     // following if not exist
-    profile.followers.unshift({ user: req.user.id });
+    profile.followers.unshift({
+      user: req.user.id,
+      firstName: req.profile.firstName,
+      lastName: req.profile.lastName,
+      avatar: req.profile.avatar,
+    });
     await profile.save();
-    req.profile.following.unshift({ user: profile.id });
+    req.profile.following.unshift({
+      user: profile.user,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      avatar: profile.avatar,
+    });
     await req.profile.save();
     return res.send(profile);
   } catch (error) {
     console.log(error);
     res.status(400).send({ error: error.message });
   }
+});
+
+router.get("/people/:skip", isAuthenticated, async (req, res) => {
+  const length = await ProfileModel.countDocuments();
+  const skip = parseInt(req.params.skip);
+  ProfileModel.find()
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(3)
+    .then((p) => {
+      return res.send({ people: [...p], enough: skip + 3 >= length });
+    })
+    .catch((err) => {
+      console.log(error);
+      res.status(400).send({ error: error.message });
+    });
 });
 
 module.exports = router;

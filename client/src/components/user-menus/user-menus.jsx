@@ -1,32 +1,42 @@
 import React, { Fragment, useState } from "react";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import MailIcon from "@material-ui/icons/Mail";
+
 import NotificationsIcon from "@material-ui/icons/Notifications";
-import { IconButton, Badge } from "@material-ui/core/";
+import { IconButton, Badge } from "@material-ui/core/"; //Badge
 import AccountDropdown from "./account-dropdown";
-import MailsDropdown from "./mails-dropdown";
+
 import NotificationsDropdown from "./notifications-dropdown";
-import SearchInput from "../search-input/search-input";
+// import MailsDropdown from "./mails-dropdown";
+// import MailIcon from "@material-ui/icons/Mail";
+// import SearchInput from "../search-input/search-input";
+import PeopleIcon from "@material-ui/icons/People";
 import { connect } from "react-redux";
+import PeopleDropDown from "./people.dropdown";
 
 const UserMenus = ({ auth }) => {
   const [accAnchorEl, setAccAnchorEl] = useState(null);
   const [notifyAnchorEl, setNotifyAnchorEl] = useState(null);
-  const [mailAnchorEl, setMailAnchorEl] = useState(null);
+  const [peopleAnchorEl, setPeopleAnchorEl] = useState(null);
+  // const [mailAnchorEl, setMailAnchorEl] = useState(null);
   if (!auth) return null;
   return (
     <Fragment>
-      <SearchInput />
+      {/* <SearchInput /> */}
       {/* <IconButton
         aria-label="show Mails"
         color="inherit"
         onClick={(event) => setMailAnchorEl(event.currentTarget)}
       >
-        <Badge badgeContent={0} color="secondary">
-          <MailIcon style={{ color: "white" }} />
-        </Badge>
-      </IconButton>
+        <MailIcon style={{ color: "white" }} />
+      </IconButton> */}
       <IconButton
+        aria-label="show Mails"
+        color="inherit"
+        onClick={(event) => setPeopleAnchorEl(event.currentTarget)}
+      >
+        <PeopleIcon style={{ color: "white" }} />
+      </IconButton>
+      {/* <IconButton
         aria-label="show Notifications"
         color="inherit"
         onClick={(event) => setNotifyAnchorEl(event.currentTarget)}
@@ -42,14 +52,18 @@ const UserMenus = ({ auth }) => {
       >
         <AccountCircle style={{ color: "white" }} />
       </IconButton>
-      <NotificationsDropdown
+      {/* <NotificationsDropdown
         anchorEl={notifyAnchorEl}
         handleClose={(event) => setNotifyAnchorEl(null)}
+      /> */}
+      <PeopleDropDown
+        anchorEl={peopleAnchorEl}
+        handleClose={(event) => setPeopleAnchorEl(null)}
       />
-      <MailsDropdown
+      {/* <MailsDropdown
         anchorEl={mailAnchorEl}
         handleClose={(event) => setMailAnchorEl(null)}
-      />
+      /> */}
       <AccountDropdown
         anchorEl={accAnchorEl}
         handleClose={(event) => setAccAnchorEl(null)}

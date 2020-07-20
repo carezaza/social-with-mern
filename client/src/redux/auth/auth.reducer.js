@@ -1,4 +1,5 @@
 import AuthActionTypes from "./auth.types";
+import { Avatar } from "@material-ui/core";
 
 const INITIAL_STATE = {
   auth: null,
@@ -38,7 +39,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         auth: null,
         isPending: false,
-      };
+      };  
     default:
       return state;
   }

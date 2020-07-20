@@ -34,6 +34,19 @@ const ProfileSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "users",
       },
+      firstName: {
+        type: String,
+      },
+      lastName: {
+        type: String,
+      },
+      avatar: {
+        type: String,
+      },
+      followAt: {
+        type: Date,
+        default: Date.now,
+      },
     },
   ],
   followers: [
@@ -41,6 +54,19 @@ const ProfileSchema = new Schema({
       user: {
         type: Schema.Types.ObjectId,
         ref: "users",
+      },
+      firstName: {
+        type: String,
+      },
+      lastName: {
+        type: String,
+      },
+      avatar: {
+        type: String,
+      },
+      followedAt: {
+        type: Date,
+        default: Date.now,
       },
     },
   ],

@@ -8,7 +8,7 @@ import {
   FetchProfileStart,
   ClearProfile,
 } from "../../redux/profile/profile.actions";
-import { FetchPostStart, ClearPost } from "../../redux/post/post.actions";
+import { FetchPostsProfileStart, ClearPosts } from "../../redux/post/post.actions";
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -21,23 +21,23 @@ const Profile = ({
   FetchProfileStart,
   match,
   ClearProfile,
-  ClearPost,
-  FetchPostStart,
+  ClearPosts,
+  FetchPostsProfileStart,
   posts,
 }) => {
   useEffect(() => {
-    FetchPostStart(match.params.id);
+    FetchPostsProfileStart(match.params.id);
     FetchProfileStart(match.params.id);
     return () => {
       ClearProfile();
-      ClearPost();
+      ClearPosts();
     };
   }, [
     match.params.id,
     FetchProfileStart,
-    FetchPostStart,
+    FetchPostsProfileStart,
     ClearProfile,
-    ClearPost,
+    ClearPosts,
   ]);
 
   console.log("render");
@@ -91,6 +91,6 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   FetchProfileStart,
   ClearProfile,
-  FetchPostStart,
-  ClearPost,
+  FetchPostsProfileStart,
+  ClearPosts,
 })(Profile);

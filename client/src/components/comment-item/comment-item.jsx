@@ -8,14 +8,12 @@ import {
   ListItemText,
   Divider,
   ListItem,
-  List,
   IconButton,
   Menu,
   MenuItem,
 } from "@material-ui/core/";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import DialogOkCancel from "../dialog-ok-cancel/dialog-ok-cancel";
-import { makeStyles } from "@material-ui/core/styles";
 import { timeSince } from "../../utiles/time";
 import { connect } from "react-redux";
 import { DeleteComment } from "../../redux/post/post.actions";
@@ -45,7 +43,6 @@ const CommentItem = ({ postId, postUser, comment, auth, DeleteComment }) => {
       return (
         <Fragment>
           <IconButton
-            Button
             aria-label="settings"
             onClick={(e) => setAnchorEl(e.currentTarget)}
             style={{ padding: 0 }}
@@ -73,10 +70,7 @@ const CommentItem = ({ postId, postUser, comment, auth, DeleteComment }) => {
     <Fragment>
       <ListItem alignItems="flex-start">
         <ListItemAvatar>
-          <Avatar
-            alt={`${comment.firstName} ${comment.lastName}`}
-            src={comment.avatar && comment.avatar}
-          />
+          <Avatar src={comment.avatar && comment.avatar} />
         </ListItemAvatar>
         <ListItemText
           primary={

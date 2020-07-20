@@ -10,7 +10,7 @@ export const FetchProfileStart = (uid) => (dispatch) => {
   dispatch({ type: ProfileActionTypes.FETCH_PROFILE_START });
 
   axios
-    .post(`/api/profile/who/${uid}`)
+    .get(`/api/profile/who/${uid}`)
     .then((res) =>
       dispatch({
         type: ProfileActionTypes.FETCH_PROFILE_SUCCESS,
@@ -41,11 +41,17 @@ export const EditPhotoStart = ({ formData }) => (dispatch) => {
   axios
     .post("/api/profile/edit/photo", formData)
     .then((res) => {
-      dispatch({ type: ProfileActionTypes.EDIT_PHOTO_END });
-      dispatch(SetAlert({ message: res.data.success, type: "success" }));
+      dispatch({
+        type: ProfileActionTypes.EDIT_PHOTO_SUCCESS,
+        payload: res.data,
+      });
+
+      dispatch(
+        SetAlert({ message: "Uploaded photo successfully.", type: "success" })
+      );
     })
     .catch((error) => {
-      dispatch({ type: ProfileActionTypes.EDIT_PHOTO_END });
+      dispatch({ type: ProfileActionTypes.EDIT_PHOTO_FAILURE });
       dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
     });
 };

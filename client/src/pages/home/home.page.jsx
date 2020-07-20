@@ -29,22 +29,26 @@ const HomePage = ({ isPendingAuth, match, auth }) => {
     <HomePageContainer>
       {isPendingAuth ? (
         <Spinner />
+      ) : auth ? (  
+        <Feed match={match} />
       ) : (
-        renderContent({ auth, showForm, setShowForm, match })
+        <div style={{ margin: "auto" }}>
+          {renderForm(showForm, setShowForm)}
+        </div>
       )}
     </HomePageContainer>
   );
 };
 
-const renderContent = ({ auth, showForm, setShowForm, match }) => {
-  if (auth ) {
-    return <Feed match={match} />;
-  } else {
-    return (
-      <div style={{ margin: "auto" }}>{renderForm(showForm, setShowForm)}</div>
-    );
-  }
-};
+// const renderContent = ({ auth, showForm, setShowForm, match }) => {
+//   if (auth ) {
+//     return ;
+//   } else {
+//     return (
+
+//     );
+//   }
+// };
 
 const renderForm = (showform, setShowForm) => {
   switch (showform) {

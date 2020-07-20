@@ -6,6 +6,7 @@ import { yupResolver } from "@hookform/resolvers";
 import FormSubmit from "../form-submit/form-submit";
 import { connect } from "react-redux";
 import { RegisterStart } from "../../redux/auth/auth.actions";
+import { useHistory } from "react-router-dom";
 
 const RegisterSchema = yup.object().shape({
   firstName: yup
@@ -47,9 +48,18 @@ const RegisterForm = ({ handleClose, RegisterStart }) => {
   const { handleSubmit, register, errors } = useForm({
     resolver: yupResolver(RegisterSchema),
   });
+  let history = useHistory();
   const onSubmit = async (data) => {
     const { firstName, lastName, password, email } = data;
-    RegisterStart({ firstName, lastName, password, email });
+    RegisterStart(
+      {
+        firstName,
+        lastName,
+        password,
+        email,
+      },
+      history
+    );
   };
   return (
     <FormSubmit handleClose={handleClose} handleSubmit={handleSubmit(onSubmit)}>

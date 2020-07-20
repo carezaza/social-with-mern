@@ -58,11 +58,7 @@ const UserPanel = ({ auth }) => {
       </IconButton>
       {expand && (
         <Fragment>
-          <Avatar
-            alt="avatarProfile"
-            src={auth.avatar && auth.avatar}
-            className={classes.avatar}
-          />
+          <Avatar src={auth.avatar && auth.avatar} className={classes.avatar} />
           <LinkStyle to={`/profile/${auth.sub}`}>
             <Typography align="center" style={{ textTransform: "capitalize" }}>
               Hello, {auth.firstName + " " + auth.lastName}
@@ -89,7 +85,7 @@ const UserPanel = ({ auth }) => {
                 <ListItemText primary="My Profile" />
               </ListItem>
             </Link>
-            <Link
+            {/* <Link
               to="/settings"
               style={{ textDecoration: "none", color: "inherit" }}
             >
@@ -99,7 +95,7 @@ const UserPanel = ({ auth }) => {
                 </ListItemIcon>
                 <ListItemText primary="Settings" />
               </ListItem>
-            </Link>
+            </Link> */}
             <ListItem button>
               <ListItemIcon>
                 <ExitToAppIcon />

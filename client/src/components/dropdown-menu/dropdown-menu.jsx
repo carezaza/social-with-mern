@@ -2,6 +2,7 @@ import React from "react";
 import { Menu } from "@material-ui/core/";
 
 const DropdownMenu = ({ anchorEl, handleClose, children }) => {
+  if (!anchorEl) return null;
   return (
     <Menu
       style={{ position: "fixed", top: "38px" }}

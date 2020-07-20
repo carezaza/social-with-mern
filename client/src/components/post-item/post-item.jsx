@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import {
@@ -14,6 +14,7 @@ import {
   Menu,
   MenuItem,
   List,
+  Modal,
 } from "@material-ui/core/";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import CommentIcon from "@material-ui/icons/Comment";
@@ -25,6 +26,7 @@ import DialogOkCancel from "../dialog-ok-cancel/dialog-ok-cancel";
 import { timeSince } from "../../utiles/time";
 import { connect } from "react-redux";
 import { DeletePost, LikeStart } from "../../redux/post/post.actions";
+import PeopleItem from "../people-item/people-item";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,6 +55,18 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     backgroundColor: "black",
+  },
+  list: {
+    display: "flex",
+    flexDirection:'column',
+    width: "100%",
+    maxWidth: 400,
+    height: "100%",
+    maxHeight: 400,
+    margin: "auto",
+    padding: 10,
+    overflowY: "auto",
+    background: "white",
   },
 }));
 
@@ -98,7 +112,7 @@ const PostItem = ({ post, auth, DeletePost, LikeStart }) => {
   const [expanded, setExpanded] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openDel, setOpenDel] = React.useState(false);
-
+  const [openLike, setOpenLike] = React.useState(false);
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -119,7 +133,7 @@ const PostItem = ({ post, auth, DeletePost, LikeStart }) => {
         avatar={
           <Avatar
             src={post.profile.avatar}
-            aria-label="recipe"
+            alt={post.profile.firstName + " " + post.profile.lastName}
             className={classes.avatar}
           />
         }
@@ -134,11 +148,7 @@ const PostItem = ({ post, auth, DeletePost, LikeStart }) => {
         action={
           post.user === auth.sub && (
             <Fragment>
-              <IconButton
-                Button
-                aria-label="settings"
-                onClick={(e) => setAnchorEl(e.currentTarget)}
-              >
+              <IconButton onClick={(e) => setAnchorEl(e.currentTarget)}>
                 <MoreHorizIcon />
               </IconButton>
               <Menu
@@ -179,9 +189,24 @@ const PostItem = ({ post, auth, DeletePost, LikeStart }) => {
 
       <div style={{ textAlign: "right", marginRight: 20 }}>
         {post.likes.length > 0 && (
-          <ButtonStyle aria-label="likes">
-            <Typography>{post.likes.length} Likes</Typography>{" "}
-          </ButtonStyle>
+          <Fragment>
+            <ButtonStyle aria-label="likes" onClick={() => setOpenLike(true)}>
+              <Typography>{post.likes.length} Likes</Typography>{" "}
+            </ButtonStyle>
+            {post.likes.length > 0 && (
+              <Modal
+                style={{ display: "flex", flexGrow: 1 }}
+                open={openLike}
+                onClose={() => setOpenLike(false)}
+              >
+                <List dense className={classes.list}>
+                  {post.likes.map((l) => (
+                    <PeopleItem key={l._id} profile={l} />
+                  ))}
+                </List>
+              </Modal>
+            )}
+          </Fragment>
         )}
 
         {post.comments.length > 0 && (

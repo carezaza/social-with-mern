@@ -4,9 +4,10 @@ import jwt_decode from "jwt-decode";
 import { SetAlert } from "../alert/alert.actions";
 import setAuthToken from "../../utiles/authToken";
 
-export const RegisterStart = ({ firstName, lastName, email, password }) => (
-  dispatch
-) => {
+export const RegisterStart = (
+  { firstName, lastName, email, password },
+  history
+) => (dispatch) => {
   dispatch({ type: AuthActionTypes.REGISTER_START });
 
   axios
@@ -19,12 +20,18 @@ export const RegisterStart = ({ firstName, lastName, email, password }) => (
     .then((res) => {
       dispatch({ type: AuthActionTypes.REGISTER_SUCCESS });
       dispatch(SetAlert({ message: res.data.success, type: "success" }));
-      dispatch(LoginStart({ email, password }));
+      // login after registered.
+      const token = res.headers["authorization"];
+      localStorage.setItem("jwt", token);
+      setAuthToken(token);
+      const decoded = jwt_decode(token);
+      dispatch(SetCurrentUser(decoded));
+      history.push("/");
     })
     .catch((err) => {
       dispatch({ type: AuthActionTypes.REGISTER_FAILURE });
 
-      if (err.response.data.email) {
+      if (err.response.data) {
         const errors = Object.values(err.response.data);
         errors.forEach((e) =>
           dispatch(SetAlert({ message: e, type: "error" }))
@@ -60,6 +67,11 @@ export const LoginStart = ({ email, password, history }) => async (
 export const SetCurrentUser = (user) => ({
   type: AuthActionTypes.SET_CURRENT_USER,
   payload: user,
+});
+
+export const SetAuthAvatar = (avatar) => ({
+  type: AuthActionTypes.SET_AUTH_AVATAR,
+  payload: avatar,
 });
 
 export const LogoutStart = () => async (dispatch) => {

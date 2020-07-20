@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-const ProfileSchema = new Schema({
+const PostSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: "users",
@@ -20,6 +20,15 @@ const ProfileSchema = new Schema({
       user: {
         type: Schema.Types.ObjectId,
         ref: "users",
+      },
+      firstName: {
+        type: String,
+      },
+      lastName: {
+        type: String,
+      },
+      avatar: {
+        type: String,
       },
     },
   ],
@@ -54,4 +63,4 @@ const ProfileSchema = new Schema({
   },
 });
 
-module.exports = model("posts", ProfileSchema);
+module.exports = model("posts", PostSchema);

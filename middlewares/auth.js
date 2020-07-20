@@ -14,6 +14,7 @@ module.exports.isAuthenticated = async (req, res, next) => {
       return res.status(401).send({ error: "Authorization denied." });
 
     req.profile = await ProfileModel.findOne({ user: user.id });
+    if (!req.profile) return res.status(401).send({ error: "Profile not found." });
     req.user = user;
     next();
   } catch (error) {

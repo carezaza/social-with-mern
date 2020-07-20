@@ -21,7 +21,7 @@ const AccountDropdown = ({ anchorEl, handleClose, LogoutStart ,auth }) => {
       <LinkStyle to={`/profile/${auth.sub}`}>
         <MenuItem onClick={handleClose}>Profile</MenuItem>
       </LinkStyle>
-      <MenuItem>Settings</MenuItem>
+      {/* <MenuItem>Settings</MenuItem> */}
       <MenuItem onClick={handleLogout}>Logout</MenuItem>
     </DropdownMenu>
   );
