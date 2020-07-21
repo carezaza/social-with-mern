@@ -5,6 +5,7 @@ const fs = require("fs");
 // Utils and middleWares
 const { isAuthenticated } = require("../middlewares/auth");
 const { photoProfile } = require("../middlewares/profile");
+const { genAccessToken } = require("../utils/jwt.utils");
 
 // Mongodb model
 const ProfileModel = require("../models/profile.model");
@@ -45,6 +46,22 @@ router.post("/edit/photo", isAuthenticated, photoProfile, async (req, res) => {
     }
     if (req.avatar) {
       req.avatar.mv(`${profilesPath}/avatar.png`);
+      if (!req.profile.avatar) {
+        req.profile.avatar = `/uploads/profiles/${req.user.id}/avatar.png`;
+
+        await req.profile.save();
+        
+        const accessToken = genAccessToken({
+          sub: req.user.id,
+          email: req.user.email,
+          tokenVersion: req.user.tokenVersion,
+          firstName: req.profile.firstName,
+          lastName: req.profile.lastName,
+          avatar: req.profile.avatar,
+        });
+
+        res.header(process.env.ACCESS_TOKEN_NAME, `Bearer ${accessToken}`);
+      }
     }
 
     if (req.background) {

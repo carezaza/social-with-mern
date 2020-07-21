@@ -59,12 +59,12 @@ const UserPanel = ({ auth }) => {
       {expand && (
         <Fragment>
           <Avatar src={auth.avatar && auth.avatar} className={classes.avatar} />
+
           <LinkStyle to={`/profile/${auth.sub}`}>
             <Typography align="center" style={{ textTransform: "capitalize" }}>
               Hello, {auth.firstName + " " + auth.lastName}
             </Typography>
           </LinkStyle>
-
           <List style={{ marginTop: "10px" }}>
             <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
               <ListItem button>

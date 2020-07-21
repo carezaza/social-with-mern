@@ -10,13 +10,30 @@ import { LogoutStart, LoginIfRefresh } from "./redux/auth/auth.actions";
 import jwt_decode from "jwt-decode";
 import store from "./redux/store";
 import setAuthToken from "./utiles/authToken";
+import axios from "axios";
+import { SetAlert } from "./redux/alert/alert.actions";
+
 
 if (localStorage.jwt) {
   setAuthToken(localStorage.jwt);
   const decoded = jwt_decode(localStorage.jwt);
   const currentTime = Date.now() / 1000;
   if (decoded.exp < currentTime) {
-    store.dispatch(LogoutStart());
+    axios
+      .post("/api/auth/resetToken")
+      .then((res) => {
+        const decodedRefreshToken = jwt_decode(token);
+        setAuthToken(false);
+        localStorage.removeItem("jwt");
+        const token = res.headers["authorization"];
+        localStorage.setItem("jwt", token);
+        setAuthToken(token);
+        store.dispatch(LoginIfRefresh(decodedRefreshToken));
+        SetAlert({ message: res.data, type: "success" });
+      })
+      .catch((err) => {
+        store.dispatch(LogoutStart());
+      });
   } else {
     store.dispatch(LoginIfRefresh(decoded));
   }

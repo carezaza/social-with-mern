@@ -73,23 +73,22 @@ router.post(
         user: id,
         firstName,
         lastName,
-        avatar: `/uploads/profiles/${id}/avatar.png`,
       });
 
       const accessToken = genAccessToken({
         sub: id,
+        email,
         tokenVersion,
         firstName,
         lastName,
-        avatar: `/uploads/profiles/${id}/avatar.png`,
       });
 
       const refreshToken = genRefreshToken({
         sub: id,
+        email,
         tokenVersion,
         firstName,
         lastName,
-        avatar: `/uploads/profiles/${id}/avatar.png`,
       });
 
       res.header(process.env.ACCESS_TOKEN_NAME, `Bearer ${accessToken}`);
@@ -129,8 +128,10 @@ router.post(
       // generate accessToken and refreshToken
       const { id, tokenVersion } = user;
       const { firstName, lastName } = profile;
+
       const accessToken = genAccessToken({
         sub: id,
+        email,
         tokenVersion,
         firstName,
         lastName,
@@ -139,10 +140,10 @@ router.post(
 
       const refreshToken = genRefreshToken({
         sub: id,
+        email,
         tokenVersion,
         firstName,
         lastName,
-        avatar: profile.avatar && profile.avatar,
       });
 
       res.header(process.env.ACCESS_TOKEN_NAME, `Bearer ${accessToken}`);
@@ -196,10 +197,19 @@ router.post("/resetToken", async (req, res) => {
       return res.status(401).send({ error: "Not authorized." });
     }
 
-    const { id, tokenVersion } = user;
+    const profile = await ProfileModel.findOne({ user: payload.sub });
+    if (!profile) return res.status(401).send({ error: "Profile not found." });
+
+    const { id, tokenVersion, email } = user;
+    const { firstName, lastName } = profile;
+    
     const accessToken = genAccessToken({
       sub: id,
+      email,
       tokenVersion,
+      firstName,
+      lastName,
+      avatar: profile.avatar && profile.avatar,
     });
 
     res.header(process.env.ACCESS_TOKEN_NAME, `Bearer ${accessToken}`);

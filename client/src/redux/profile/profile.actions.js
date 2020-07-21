@@ -1,6 +1,9 @@
 import ProfileActionTypes from "./profile.types";
 import { SetAlert } from "../alert/alert.actions";
 import axios from "axios";
+import jwt_decode from "jwt-decode";
+import setAuthToken from "../../utiles/authToken";
+import { SetCurrentUser } from "../auth/auth.actions";
 
 export const ClearProfile = () => ({
   type: ProfileActionTypes.CLEAR_PROFILE,
@@ -45,7 +48,13 @@ export const EditPhotoStart = ({ formData }) => (dispatch) => {
         type: ProfileActionTypes.EDIT_PHOTO_SUCCESS,
         payload: res.data,
       });
-
+      const token = res.headers["authorization"];
+      localStorage.removeItem("jwt");
+      localStorage.setItem("jwt", token);
+      setAuthToken(false);
+      setAuthToken(token);
+      const decoded = jwt_decode(token);
+      dispatch(SetCurrentUser(decoded));
       dispatch(
         SetAlert({ message: "Uploaded photo successfully.", type: "success" })
       );

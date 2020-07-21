@@ -45,16 +45,14 @@ const ProfileContent = ({ profile, auth, posts }) => {
         {posts.length > 0 ? (
           posts.map((post) => <PostItem key={post._id} post={post} />)
         ) : (
-          <div style={{ width: "100%", height: "100%", display: "flex" }}>
-            <Typography
-              variant="h5"
-              component="h4"
-              align="center"
-              style={{ margin: "auto" }}
-            >
-              No posts.
-            </Typography>
-          </div>
+          <Typography
+            variant="h5"
+            component="h4"
+            align="center"
+            style={{ margin: "auto" }}
+          >
+            No posts.
+          </Typography>
         )}
       </ContentRight>
     </ProfileContentContainer>
