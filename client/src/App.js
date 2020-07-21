@@ -6,7 +6,7 @@ import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import AlertMessage from "./components/alert/alert";
 import styled from "styled-components";
 import BackgroundImage from "./assets/bg-home1920.png";
-import { LogoutStart, LoginIfRefresh } from "./redux/auth/auth.actions";
+import { SetCurrentUser } from "./redux/auth/auth.actions";
 import jwt_decode from "jwt-decode";
 import store from "./redux/store";
 import setAuthToken from "./utiles/authToken";
@@ -22,20 +22,25 @@ if (localStorage.jwt) {
     axios
       .post("/api/auth/resetToken")
       .then((res) => {
-        const decodedRefreshToken = jwt_decode(token);
-        setAuthToken(false);
+       const token = res.headers["authorization"];
+        const decodedToken = jwt_decode(token);
         localStorage.removeItem("jwt");
-        const token = res.headers["authorization"];
         localStorage.setItem("jwt", token);
+        setAuthToken(false);
         setAuthToken(token);
-        store.dispatch(LoginIfRefresh(decodedRefreshToken));
-        SetAlert({ message: res.data, type: "success" });
+        store.dispatch(SetCurrentUser(decodedToken));
+        store.dispatch(
+          SetAlert({ message: res.data.success, type: "success" })
+        );
       })
       .catch((err) => {
-        store.dispatch(LogoutStart());
+         console.log(err);
+        store.dispatch(
+          SetAlert({ message: err.response.data.error, type: "success" })
+        );
       });
   } else {
-    store.dispatch(LoginIfRefresh(decoded));
+    store.dispatch(SetCurrentUser(decoded));
   }
 }
 
