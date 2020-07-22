@@ -101,37 +101,52 @@ export const ClearPosts = () => ({
   type: PostActionTypes.CLEAR_POSTS,
 });
 
-export const FetchPostsProfileStart = (uid) => async (dispatch) => {
+export const FetchPostsProfileStart = (uid, page) => async (dispatch) => {
   dispatch({ type: PostActionTypes.FETCH_POSTS_PROFILE_START });
-
   axios
-    .get(`/api/post/fetch/${uid}`)
-    .then((res) =>
+    .get(`/api/post/fetch/${uid}/${page}`)
+    .then((res) => {
       dispatch({
         type: PostActionTypes.FETCH_POSTS_PROFILE_SUCCESS,
-        payload: res.data,
-      })
-    )
+        payload: res.data.posts,
+      });
+      dispatch({
+        type: PostActionTypes.SET_HAS_MORE,
+        payload: res.data.hasMore,
+      });
+    })
     .catch((error) => {
       dispatch({ type: PostActionTypes.FETCH_POSTS_PROFILE_FAILURE });
       dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
     });
 };
 
-export const FetchPostsHomeStart = () => async (dispatch) => {
+export const FetchPostsHomeStart = (page) => async (dispatch) => {
   dispatch({ type: PostActionTypes.FETCH_POSTS_HOME_START });
-
   axios
-    .get(`/api/post/`)
-    .then((res) =>
+    .get(`/api/post/${page}`)
+    .then((res) => {
       dispatch({
         type: PostActionTypes.FETCH_POSTS_HOME_SUCCESS,
-        payload: res.data,
-      })
-    )
+        payload: res.data.posts,
+      });
+      dispatch({
+        type: PostActionTypes.SET_HAS_MORE,
+        payload: res.data.hasMore,
+      });
+    })
     .catch((error) => {
       dispatch({ type: PostActionTypes.FETCH_POSTS_HOME_FAILURE });
       dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
     });
 };
 
+export const SetHasMore = (bool) => ({
+  type: PostActionTypes.SET_HAS_MORE,
+  payload: bool,
+});
+
+export const SetPostsStart = (posts) => ({
+  type: PostActionTypes.SET_POSTS,
+  payload: posts,
+});

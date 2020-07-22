@@ -1,25 +1,16 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import CreatePost from "../create-post/create-post";
 import PostItem from "../post-item/post-item";
-import axios from "axios";
+import { connect } from "react-redux";
+import { FetchPostsHomeStart, ClearPosts, SetHasMore } from "../../redux/post/post.actions";
 
-const Posts = () => {
-  const [posts, setPosts] = useState([]);
-  const [hasMore, setHasMore] = useState(true);
+const Posts = ({ FetchPostsHomeStart, posts, hasMore, ClearPosts, SetHasMore }) => {
   const [page, setPage] = useState(0);
 
   const load = useCallback(() => {
-    axios
-      .get(`/api/post/${page}`)
-      .then((res) => {
-        setPosts((p) => [...p, ...res.data.posts]);
-        if (!res.data.hasMore) {
-          setHasMore(res.data.hasMore);
-        }
-      })
-      .catch((err) => console.log(err));
+    FetchPostsHomeStart(page);
     setPage(page + 1);
-  }, [page]);
+  }, [page, FetchPostsHomeStart]);
 
   const loader = useRef(load);
 
@@ -52,6 +43,13 @@ const Posts = () => {
     };
   }, [el]);
 
+  useEffect(() => {
+    return () => {
+      ClearPosts();
+      SetHasMore(true);
+    }
+  },[ClearPosts,SetHasMore]);
+
   return (
     <div
       style={{
@@ -74,4 +72,9 @@ const Posts = () => {
   );
 };
 
-export default Posts;
+const mapStateToProps = (state) => ({
+  posts: state.postReducer.posts,
+  hasMore: state.postReducer.hasMore,
+});
+
+export default connect(mapStateToProps, { FetchPostsHomeStart,ClearPosts,SetHasMore })(Posts);

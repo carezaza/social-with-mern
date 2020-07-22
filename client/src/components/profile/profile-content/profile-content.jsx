@@ -11,7 +11,11 @@ import ProfileBio from "./profile-bio";
 import FollowPost from "./follow-post";
 import CreatePost from "../../create-post/create-post";
 import PostItem from "../../post-item/post-item";
-import axios from "axios";
+import {
+  FetchPostsProfileStart,
+  ClearPosts,
+  SetHasMore,
+} from "../../../redux/post/post.actions";
 
 const ProfileContentContainer = styled.div`
   display: flex;
@@ -34,25 +38,23 @@ const ContentRight = styled.div`
   flex-direction: column;
 `;
 
-const ProfileContent = ({ profile, auth }) => {
+const ProfileContent = ({
+  profile,
+  auth,
+  hasMore,
+  posts,
+  FetchPostsProfileStart,
+  SetHasMore,
+  ClearPosts,
+}) => {
   const { user } = profile;
-  const [posts, setPosts] = useState([]);
-  const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
   const [el, setEl] = useState(null);
 
   const load = useCallback(() => {
-    axios
-      .get(`/api/post/fetch/${user}/${page}`)
-      .then((res) => {
-        setPosts((p) => [...p, ...res.data.posts]);
-        if (!res.data.hasMore) {
-          setHasMore(res.data.hasMore);
-        }
-      })
-      .catch((err) => console.log(err));
+    FetchPostsProfileStart(user, page);
     setPage((p) => p + 1);
-  }, [page, user]);
+  }, [page, user, FetchPostsProfileStart]);
 
   const loader = useRef(load);
 
@@ -84,7 +86,13 @@ const ProfileContent = ({ profile, auth }) => {
     };
   }, [el]);
 
-  
+  useEffect(() => {
+    return () => {
+      ClearPosts();
+      SetHasMore(true);
+    }
+  },[ClearPosts,SetHasMore]);
+
   return (
     <ProfileContentContainer>
       <ContentLeft>
@@ -120,6 +128,12 @@ const ProfileContent = ({ profile, auth }) => {
 
 const mapStateToProps = (state) => ({
   auth: state.authReducer.auth,
+  posts: state.postReducer.posts,
+  hasMore: state.postReducer.hasMore,
 });
 
-export default connect(mapStateToProps)(ProfileContent);
+export default connect(mapStateToProps, {
+  FetchPostsProfileStart,
+  ClearPosts,
+  SetHasMore,
+})(ProfileContent);

@@ -2,6 +2,7 @@ import PostActionTypes from "./post.types";
 
 const INITIAL_STATE = {
   posts: [],
+  hasMore: true,
   isPending: false,
 };
 
@@ -46,14 +47,14 @@ export default (state = INITIAL_STATE, action) => {
     case PostActionTypes.FETCH_POSTS_HOME_SUCCESS:
       return {
         ...state,
-        posts: payload,
+        posts: [...state.posts, ...payload],
         isPending: false,
       };
 
     case PostActionTypes.CLEAR_POSTS:
       return {
         ...state,
-        posts: null,
+        posts: [],
       };
     case PostActionTypes.LIKE_POST_SUCCESS:
       return {
@@ -77,6 +78,16 @@ export default (state = INITIAL_STATE, action) => {
           }
           return post;
         }),
+      };
+    case PostActionTypes.SET_POSTS:
+      return {
+        ...state,
+        posts: payload,
+      };
+    case PostActionTypes.SET_HAS_MORE:
+      return {
+        ...state,
+        hasMore: payload,
       };
     default:
       return state;
