@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Avatar, TextareaAutosize, TextField } from "@material-ui/core/";
+import { Avatar, TextField } from "@material-ui/core/";
 import { CreateCommentStart } from "../../redux/post/post.actions";
 import { connect } from "react-redux";
 

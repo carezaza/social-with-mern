@@ -8,7 +8,6 @@ import {
   FetchProfileStart,
   ClearProfile,
 } from "../../redux/profile/profile.actions";
-import { FetchPostsProfileStart, ClearPosts } from "../../redux/post/post.actions";
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -21,27 +20,17 @@ const Profile = ({
   FetchProfileStart,
   match,
   ClearProfile,
-  ClearPosts,
-  FetchPostsProfileStart,
-  posts,
 }) => {
   useEffect(() => {
-    FetchPostsProfileStart(match.params.id);
     FetchProfileStart(match.params.id);
+
     return () => {
       ClearProfile();
-      ClearPosts();
     };
-  }, [
-    match.params.id,
-    FetchProfileStart,
-    FetchPostsProfileStart,
-    ClearProfile,
-    ClearPosts,
-  ]);
+  }, [match.params.id, FetchProfileStart, ClearProfile]);
 
   console.log("render");
-  if (isPending && !profile && !posts)
+  if (isPending && !profile)
     return (
       <div
         style={{
@@ -56,7 +45,7 @@ const Profile = ({
       </div>
     );
 
-  if (!isPending && !profile && !posts)
+  if (!isPending && !profile)
     return (
       <div
         style={{
@@ -72,11 +61,10 @@ const Profile = ({
       </div>
     );
   return (
-    profile &&
-    posts && (
+    profile && (
       <ProfileContainer>
         <ProfileHeader profile={profile} />
-        <ProfileContent profile={profile} posts={posts} />
+        <ProfileContent profile={profile} />
       </ProfileContainer>
     )
   );
@@ -85,12 +73,9 @@ const Profile = ({
 const mapStateToProps = (state) => ({
   isPending: state.profileReducer.isPending,
   profile: state.profileReducer.profile,
-  posts: state.postReducer.posts,
 });
 
 export default connect(mapStateToProps, {
   FetchProfileStart,
   ClearProfile,
-  FetchPostsProfileStart,
-  ClearPosts,
 })(Profile);

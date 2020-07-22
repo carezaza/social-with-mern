@@ -1,5 +1,4 @@
 import AuthActionTypes from "./auth.types";
-import { Avatar } from "@material-ui/core";
 
 const INITIAL_STATE = {
   auth: null,

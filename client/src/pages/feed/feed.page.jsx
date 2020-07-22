@@ -46,10 +46,19 @@ const FeedBox = styled.div`
 //match path is '/'
 const Feed = ({ match, auth }) => {
   const [expand, setExpand] = useState(true);
+
+  const handleScroll = (e) => {
+    const bottom =
+      e.target.scrollHeight - Math.round(e.target.scrollTop) ===
+      e.target.clientHeight;
+    if (bottom) {
+    } else {
+    }
+  };
   return (
     <FeedContainer expand={expand}>
       <UserPanel auth={auth} />
-      <Container>
+      <Container onScroll={handleScroll}>
         <IconButton
           size="small"
           style={{ position: "fixed", padding: 0 }}

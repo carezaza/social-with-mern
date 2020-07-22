@@ -1,11 +1,11 @@
 import React, { Fragment, useState } from "react";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 
-import NotificationsIcon from "@material-ui/icons/Notifications";
-import { IconButton, Badge } from "@material-ui/core/"; //Badge
+// import NotificationsIcon from "@material-ui/icons/Notifications";
+import { IconButton } from "@material-ui/core/"; //Badge
 import AccountDropdown from "./account-dropdown";
 
-import NotificationsDropdown from "./notifications-dropdown";
+// import NotificationsDropdown from "./notifications-dropdown";
 // import MailsDropdown from "./mails-dropdown";
 // import MailIcon from "@material-ui/icons/Mail";
 // import SearchInput from "../search-input/search-input";
@@ -15,7 +15,7 @@ import PeopleDropDown from "./people.dropdown";
 
 const UserMenus = ({ auth }) => {
   const [accAnchorEl, setAccAnchorEl] = useState(null);
-  const [notifyAnchorEl, setNotifyAnchorEl] = useState(null);
+  // const [notifyAnchorEl, setNotifyAnchorEl] = useState(null);
   const [peopleAnchorEl, setPeopleAnchorEl] = useState(null);
   // const [mailAnchorEl, setMailAnchorEl] = useState(null);
   if (!auth) return null;

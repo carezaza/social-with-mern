@@ -153,26 +153,38 @@ router.delete(
   }
 );
 
-router.get("/fetch/:id", isAuthenticated, (req, res) => {
+router.get("/fetch/:id/:page", isAuthenticated, async (req, res) => {
+  const length = await PostModel.find({ user: req.params.id }).countDocuments();
+  const page = parseInt(req.params.page);
+  const skip = 3 * page;
   PostModel.find({ user: req.params.id })
     .populate("profile", ["firstName", "lastName", "avatar"])
     .sort({
       postedAt: -1,
     })
-    .limit(10)
-    .then((posts) => res.send(posts))
+    .skip(skip)
+    .limit(3)
+    .then((posts) => {
+      res.send({ posts, hasMore: skip < length });
+    })
     .catch((error) => {
       console.log(error);
       res.status(400).send({ error: error.message });
     });
 });
 
-router.get("/", isAuthenticated, (_req, res) => {
+router.get("/:page", isAuthenticated, async (req, res) => {
+  const length = await PostModel.countDocuments();
+  const page = parseInt(req.params.page);
+  const skip = 3 * page;
   PostModel.find()
     .populate("profile", ["firstName", "lastName", "avatar"])
     .sort({ postedAt: -1 })
-    .limit(10)
-    .then((posts) => res.send(posts))
+    .skip(skip)
+    .limit(3)
+    .then((posts) => {
+      res.send({ posts, hasMore: skip < length });
+    })
     .catch((error) => {
       console.log(error);
       res.status(400).send({ error: error.message });

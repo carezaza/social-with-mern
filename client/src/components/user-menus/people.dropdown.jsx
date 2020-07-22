@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  List,
-  Button,
-  Typography,
-  ListItem,
-  ListItemText,
-  MenuItem,
-} from "@material-ui/core/";
+import { List, ListItem, ListItemText } from "@material-ui/core/";
 import DropdownMenu from "../dropdown-menu/dropdown-menu";
 import axios from "axios";
 import PeopleItem from "../people-item/people-item";

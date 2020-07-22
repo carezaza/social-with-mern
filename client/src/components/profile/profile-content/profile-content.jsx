@@ -1,11 +1,17 @@
-import React from "react";
+import React, {
+  useRef,
+  useState,
+  useCallback,
+  Fragment,
+  useEffect,
+} from "react";
 import styled from "styled-components";
-import { Typography } from "@material-ui/core";
 import { connect } from "react-redux";
 import ProfileBio from "./profile-bio";
 import FollowPost from "./follow-post";
 import CreatePost from "../../create-post/create-post";
 import PostItem from "../../post-item/post-item";
+import axios from "axios";
 
 const ProfileContentContainer = styled.div`
   display: flex;
@@ -28,7 +34,57 @@ const ContentRight = styled.div`
   flex-direction: column;
 `;
 
-const ProfileContent = ({ profile, auth, posts }) => {
+const ProfileContent = ({ profile, auth }) => {
+  const { user } = profile;
+  const [posts, setPosts] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(0);
+  const [el, setEl] = useState(null);
+
+  const load = useCallback(() => {
+    axios
+      .get(`/api/post/fetch/${user}/${page}`)
+      .then((res) => {
+        setPosts((p) => [...p, ...res.data.posts]);
+        if (!res.data.hasMore) {
+          setHasMore(res.data.hasMore);
+        }
+      })
+      .catch((err) => console.log(err));
+    setPage((p) => p + 1);
+  }, [page, user]);
+
+  const loader = useRef(load);
+
+  const observer = useRef(
+    new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loader.current();
+        }
+      },
+      { threshold: 1 }
+    )
+  );
+
+  useEffect(() => {
+    loader.current = load;
+  }, [load]);
+
+  useEffect(() => {
+    const currentEl = el;
+    const currentObserver = observer.current;
+
+    if (currentEl) {
+      currentObserver.observe(currentEl);
+    }
+
+    return () => {
+      if (currentEl) currentObserver.unobserve(currentEl);
+    };
+  }, [el]);
+
+  
   return (
     <ProfileContentContainer>
       <ContentLeft>
@@ -41,18 +97,21 @@ const ProfileContent = ({ profile, auth, posts }) => {
       </ContentLeft>
       <ContentRight>
         {profile.user === auth.sub && <CreatePost />}
+        {posts.length > 0 && (
+          <Fragment>
+            {posts.map((post) => (
+              <PostItem key={post._id} post={post} />
+            ))}
+          </Fragment>
+        )}
+        {hasMore && (
+          <div ref={setEl} style={{ margin: "10px  auto" }}>
+            Loading...
+          </div>
+        )}
 
-        {posts.length > 0 ? (
-          posts.map((post) => <PostItem key={post._id} post={post} />)
-        ) : (
-          <Typography
-            variant="h5"
-            component="h4"
-            align="center"
-            style={{ margin: "auto" }}
-          >
-            No posts.
-          </Typography>
+        {!hasMore && posts.length < 1 && (
+          <div style={{ margin: "10px auto", fontSize: 16 }}>No posts.</div>
         )}
       </ContentRight>
     </ProfileContentContainer>
