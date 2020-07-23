@@ -29,7 +29,6 @@ const Profile = ({
     };
   }, [match.params.id, FetchProfileStart, ClearProfile]);
 
-  console.log("render");
   if (isPending && !profile)
     return (
       <div

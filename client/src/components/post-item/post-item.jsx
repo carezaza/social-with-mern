@@ -136,7 +136,7 @@ const PostItem = ({
       if (action === "delete") DeleteCommentSuccess(p);
       if (action === "comment") CommentSuccess(p);
     });
-  }, []);
+  }, [LikeSuccess,DeleteCommentSuccess,CommentSuccess]);
 
   if (!post) return null;
   return (

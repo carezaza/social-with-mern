@@ -4,7 +4,6 @@ const express = require("express");
 const useMiddleWares = require("./config/use-middleWares");
 const connectMongoDb = require("./config/mongoose");
 const app = express();
-const { PORT } = process.env;
 
 // Use middleWares
 useMiddleWares(app);
@@ -24,8 +23,8 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-const server = app.listen(PORT, () =>
-  console.log(`Server is listening on port ${PORT}`)
+const server = app.listen(process.env.PORT, () =>
+  console.log(`Server is listening on port ${process.env.PORT}`)
 );
 
 // Connect mongoDb
