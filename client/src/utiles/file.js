@@ -7,13 +7,14 @@ export const checkFile = (file) => {
   if (
     file.type !== "image/png" &&
     file.type !== "image/jpg" &&
-    file.type !== "image/jpeg"
+    file.type !== "image/jpeg" &&
+    file.type !== "image/gif"
   ) {
     errors.type = true;
   }
 
-  if(!errors.size && !errors.type){
-      return false;
+  if (!errors.size && !errors.type) {
+    return false;
   }
   return errors;
 };
