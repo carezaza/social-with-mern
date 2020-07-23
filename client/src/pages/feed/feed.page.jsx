@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import PropTypes from "prop-types";
 import styled from "styled-components";
@@ -9,6 +9,8 @@ import UserPanel from "../../components/user-panel/user-panel";
 import Posts from "../../components/posts/posts";
 import Profile from "../../components/profile/profile";
 import { connect } from "react-redux";
+
+
 
 const FeedContainer = styled.div`
   display: flex;
@@ -46,6 +48,7 @@ const FeedBox = styled.div`
 //match path is '/'
 const Feed = ({ match, auth }) => {
   const [expand, setExpand] = useState(true);
+
   return (
     <FeedContainer expand={expand}>
       <UserPanel auth={auth} />

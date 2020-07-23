@@ -56,17 +56,18 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         posts: [],
       };
+    // case PostActionTypes.LIKE_POST_SUCCESS:
+    //   return {
+    //     ...state,
+    //     isPending: false,
+    //     posts: state.posts.map((post) => {
+    //       if (post._id === payload._id) {
+    //         return { ...post, likes: [...payload.likes] };
+    //       }
+    //       return post;
+    //     }),
+    //   };
     case PostActionTypes.LIKE_POST_SUCCESS:
-      return {
-        ...state,
-        isPending: false,
-        posts: state.posts.map((post) => {
-          if (post._id === payload._id) {
-            return { ...post, likes: [...payload.likes] };
-          }
-          return post;
-        }),
-      };
     case PostActionTypes.CREAT_COMMENT_SUCCESS:
     case PostActionTypes.DELETE_COMMENT_SUCCESS:
       return {
@@ -74,7 +75,7 @@ export default (state = INITIAL_STATE, action) => {
         isPending: false,
         posts: state.posts.map((post) => {
           if (post._id === payload._id) {
-            return { ...post, comments: [...payload.comments] };
+            return { ...payload };
           }
           return post;
         }),

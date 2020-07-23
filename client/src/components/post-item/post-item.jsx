@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import {
@@ -25,8 +25,17 @@ import CreateComment from "../create-comment/create-comment";
 import DialogOkCancel from "../dialog-ok-cancel/dialog-ok-cancel";
 import { timeSince } from "../../utiles/time";
 import { connect } from "react-redux";
-import { DeletePost, LikeStart } from "../../redux/post/post.actions";
+import {
+  DeletePost,
+  LikeStart,
+  LikeSuccess,
+  CommentSuccess,
+  DeleteCommentSuccess,
+} from "../../redux/post/post.actions";
 import PeopleItem from "../people-item/people-item";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:5000");
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
   },
   list: {
     display: "flex",
-    flexDirection:'column',
+    flexDirection: "column",
     width: "100%",
     maxWidth: 400,
     height: "100%",
@@ -94,20 +103,15 @@ const ButtonName = styled.button`
   }
 `;
 
-const PostItem = ({ post, auth, DeletePost, LikeStart }) => {
-  // useEffect(() => {
-  //   let oldLiked =
-  //     post && post.likes && !!post.likes.find((l) => l.user === auth.sub);
-
-  //   return () => {
-  //     let newLiked =
-  //       post && post.likes && !!post.likes.find((l) => l.user === auth.sub);
-  //     if (oldLiked !== newLiked) {
-  //       LikeStart(post._id);
-  //     }
-  //   };
-  // }, [LikeStart]);
-
+const PostItem = ({
+  post,
+  auth,
+  DeletePost,
+  LikeStart,
+  LikeSuccess,
+  DeleteCommentSuccess,
+  CommentSuccess,
+}) => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -125,6 +129,14 @@ const PostItem = ({ post, auth, DeletePost, LikeStart }) => {
     DeletePost(post._id);
     setOpenDel(false);
   };
+
+  useEffect(() => {
+    socket.on("post", ({ action, p }) => {
+      if (action === "like") LikeSuccess(p);
+      if (action === "delete") DeleteCommentSuccess(p);
+      if (action === "comment") CommentSuccess(p);
+    });
+  }, []);
 
   if (!post) return null;
   return (
@@ -254,4 +266,10 @@ const mapStateToProps = (state) => ({
   auth: state.authReducer.auth,
 });
 
-export default connect(mapStateToProps, { DeletePost, LikeStart })(PostItem);
+export default connect(mapStateToProps, {
+  DeletePost,
+  LikeStart,
+  LikeSuccess,
+  DeleteCommentSuccess,
+  CommentSuccess,
+})(PostItem);

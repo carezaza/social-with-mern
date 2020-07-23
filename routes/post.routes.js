@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
-const mongoose = require("mongoose");
+const io = require("../socket");
 
 // Utils and middleWares
 const { isAuthenticated } = require("../middlewares/auth");
@@ -72,7 +72,10 @@ router.delete("/:postId", isAuthenticated, async (req, res) => {
 
 router.post("/like/:postId", isAuthenticated, async (req, res) => {
   try {
-    const post = await PostModel.findById(req.params.postId);
+    const post = await PostModel.findById(req.params.postId).populate(
+      "profile",
+      ["firstName", "lastName", "avatar"]
+    );
     if (!post) return res.status(400).send({ error: "Post not found." });
     if (post.likes.find((like) => like.user.toString() === req.user.id)) {
       // post.likes.filter((like) => like.user.toString() !== req.user.id);
@@ -88,7 +91,11 @@ router.post("/like/:postId", isAuthenticated, async (req, res) => {
         avatar: req.profile.avatar,
       });
     }
-    post.save().then((p) => res.send(p));
+    post.save().then((p) => {
+      // realtime liking
+      io.getIO().emit("post", { action: "like", p });
+      res.send({ success: "Liking successfully." });
+    });
   } catch (error) {
     console.log(error);
     res.status(400).send({ error: error.message });
@@ -99,7 +106,10 @@ router.post("/comment/:postId", isAuthenticated, async (req, res) => {
   const { content } = req.body;
   if (!content) return res.status(400).send({ error: "No content commented." });
   try {
-    const post = await PostModel.findById(req.params.postId);
+    const post = await PostModel.findById(req.params.postId).populate(
+      "profile",
+      ["firstName", "lastName", "avatar"]
+    );
     if (!post) return res.status(400).send({ error: "Post not found." });
     post.comments.push({
       user: req.user.id,
@@ -109,7 +119,11 @@ router.post("/comment/:postId", isAuthenticated, async (req, res) => {
       avatar: req.profile.avatar,
     });
 
-    post.save().then((p) => res.send(p));
+    post.save().then((p) => {
+      // realtime commenting.
+      io.getIO().emit("post", { action: "comment", p });
+      res.send({ success: "Commented successfully." });
+    });
   } catch (error) {
     console.log(error);
     res.status(400).send({ error: error.message });
@@ -121,7 +135,9 @@ router.delete(
   isAuthenticated,
   async (req, res) => {
     try {
-      const post = await PostModel.findById(req.params.postId);
+      const post = await PostModel.findById(
+        req.params.postId
+      ).populate("profile", ["firstName", "lastName", "avatar"]);
       if (!post) return res.status(400).send({ error: "Post not found." });
       const comment = post.comments.find(
         (c) => c._id.toString() === req.params.commentId.toString()
@@ -141,7 +157,8 @@ router.delete(
         post.comments.splice(removeIndex, 1);
 
         post.save().then((p) => {
-          return res.send(p);
+          io.getIO().emit("post", { action: "delete", p });
+          res.send({ success: "Deleted successfully." });
         });
       } else {
         return res.status(403).send({ error: "Deleted access denied." });

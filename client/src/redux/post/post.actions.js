@@ -45,11 +45,12 @@ export const LikeStart = (postId) => (dispatch) => {
   axios
     .post(`/api/post/like/${postId}`)
     .then((res) => {
-      dispatch({
-        type: PostActionTypes.LIKE_POST_SUCCESS,
-        payload: res.data,
-      });
-      dispatch(SetAlert({ message: "Liking successfully.", type: "success" }));
+      // comment this for realtime liking
+      // dispatch({
+      //   type: PostActionTypes.LIKE_POST_SUCCESS,
+      //   payload: res.data,
+      // });
+      dispatch(SetAlert({ message: res.data.success, type: "success" }));
     })
     .catch((error) => {
       dispatch({ type: PostActionTypes.LIKE_POST_FAILURE });
@@ -57,19 +58,24 @@ export const LikeStart = (postId) => (dispatch) => {
     });
 };
 
+// added this action for realtime liking
+export const LikeSuccess = (post) => ({
+  type: PostActionTypes.LIKE_POST_SUCCESS,
+  payload: post,
+});
+
 export const CreateCommentStart = (postId, content) => (dispatch) => {
   dispatch({ type: PostActionTypes.CREAT_COMMENT_START });
 
   axios
     .post(`/api/post/comment/${postId}`, { content: content })
     .then((res) => {
-      dispatch({
-        type: PostActionTypes.CREAT_COMMENT_SUCCESS,
-        payload: res.data,
-      });
-      dispatch(
-        SetAlert({ message: "Commented successfully.", type: "success" })
-      );
+      // comment this for realtime commenting
+      // dispatch({
+      //   type: PostActionTypes.CREAT_COMMENT_SUCCESS,
+      //   payload: res.data,
+      // });
+      dispatch(SetAlert({ message: res.data.success, type: "success" }));
     })
     .catch((error) => {
       dispatch({ type: PostActionTypes.CREAT_COMMENT_FAILURE });
@@ -77,25 +83,35 @@ export const CreateCommentStart = (postId, content) => (dispatch) => {
     });
 };
 
+// added this action for realtime commenting
+export const CommentSuccess = (post) => ({
+  type: PostActionTypes.CREAT_COMMENT_SUCCESS,
+  payload: post,
+});
+
 export const DeleteComment = (postId, commentId) => (dispatch) => {
   dispatch({ type: PostActionTypes.DELETE_COMMENT_START });
 
   axios
     .delete(`/api/post/comment/${postId}/${commentId}`)
     .then((res) => {
-      dispatch({
-        type: PostActionTypes.DELETE_COMMENT_SUCCESS,
-        payload: res.data,
-      });
-      dispatch(
-        SetAlert({ message: "Deleted comment successfully.", type: "success" })
-      );
+      // dispatch({
+      //   type: PostActionTypes.DELETE_COMMENT_SUCCESS,
+      //   payload: res.data,
+      // });
+      dispatch(SetAlert({ message: res.data.success, type: "success" }));
     })
     .catch((error) => {
       dispatch({ type: PostActionTypes.DELETE_COMMENT_FAILURE });
       dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
     });
 };
+
+// added this action for realtime deleting comment
+export const DeleteCommentSuccess = (post) => ({
+  type: PostActionTypes.DELETE_COMMENT_SUCCESS,
+  payload: post,
+});
 
 export const ClearPosts = () => ({
   type: PostActionTypes.CLEAR_POSTS,
