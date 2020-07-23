@@ -56,7 +56,7 @@ router.delete("/:postId", isAuthenticated, async (req, res) => {
       $and: [{ _id: req.params.postId }, { user: req.user.id }],
     });
 
-    const postPath = `${__dirname}/../client/public/uploads/posts/${req.params.postId}`;
+    const postPath = `${__dirname}/../client/build/uploads/posts/${req.params.postId}`;
     if (fs.existsSync(`${postPath}`)) {
       fs.rmdirSync(`${postPath}`, { recursive: true });
     }

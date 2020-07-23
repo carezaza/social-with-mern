@@ -40,7 +40,7 @@ router.post("/edit/bio", isAuthenticated, async (req, res) => {
 
 router.post("/edit/photo", isAuthenticated, photoProfile, async (req, res) => {
   try {
-    const profilesPath = `${__dirname}/../client/public/uploads/profiles/${req.user.id}`;
+    const profilesPath = `${__dirname}/../client/build/uploads/profiles/${req.user.id}`;
     if (!fs.existsSync(`${profilesPath}`)) {
       fs.mkdirSync(`${profilesPath}`);
     }

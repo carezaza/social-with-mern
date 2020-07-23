@@ -9,6 +9,7 @@ module.exports = (app) => {
   } else {
     app.use(require("morgan")("dev"));
   }
+
   app.use(cookieParser());
   app.use(fileUpload({ limits: { fileSize: 10 * 1024 * 1024 } }));
   app.use(bodyParser.json());

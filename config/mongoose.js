@@ -1,9 +1,14 @@
+if(process.env.NODE_ENV !== 'production'){
+  require("dotenv").config();
+}
 const mongoose = require("mongoose");
+
+const { MONGO_DB_USERNAME, MONGO_DB_PASSWORD, MONGO_DB_NAME } = process.env;
 
 module.exports = (server) => {
   mongoose
     .connect(
-      `mongodb+srv://${process.env.MONGO_DB_USERNAME}:${process.env.MONGO_DB_PASSWORD}@cluster0.gzia1.mongodb.net/${process.env.MONGO_DB_NAME}?retryWrites=true&w=majority`,
+      `mongodb+srv://${MONGO_DB_USERNAME}:${MONGO_DB_PASSWORD}@cluster0.gzia1.mongodb.net/${MONGO_DB_NAME}?retryWrites=true&w=majority`,
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
