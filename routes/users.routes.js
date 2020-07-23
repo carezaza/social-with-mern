@@ -9,7 +9,6 @@ const { isAuthenticated } = require("../middlewares/auth");
 const {
   genAccessToken,
   genRefreshToken,
-  verifyAccessToken,
   verifyRefreshToken,
 } = require("../utils/jwt.utils");
 
@@ -202,7 +201,7 @@ router.post("/resetToken", async (req, res) => {
 
     const { id, tokenVersion, email } = user;
     const { firstName, lastName } = profile;
-    
+
     const accessToken = genAccessToken({
       sub: id,
       email,

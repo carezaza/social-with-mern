@@ -10,7 +10,6 @@ const { isHasContent } = require("../middlewares/post");
 // Mongodb model
 const PostModel = require("../models/post.model");
 const ProfileModel = require("../models/profile.model");
-const { profile } = require("console");
 
 router.post("/create", isAuthenticated, isHasContent, async (req, res) => {
   try {
