@@ -34,7 +34,7 @@ export default (state = INITIAL_STATE, action) => {
     case PostActionTypes.CREATE_POST_SUCCESS:
       return {
         ...state,
-        posts: [{ ...payload }, ...state.posts],
+        posts: state.posts.unshift({ ...payload }),
         isPending: false,
       };
     case PostActionTypes.DELETE_POST_SUCCESS:

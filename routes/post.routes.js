@@ -181,7 +181,7 @@ router.get("/fetch/:id/:page", isAuthenticated, async (req, res) => {
     .skip(skip)
     .limit(3)
     .then((posts) => {
-      res.send({ posts, hasMore: skip < length });
+      res.send({ posts, hasMore: skip + 3 < length });
     })
     .catch((error) => {
       console.log(error);
@@ -199,7 +199,7 @@ router.get("/:page", isAuthenticated, async (req, res) => {
     .skip(skip)
     .limit(3)
     .then((posts) => {
-      res.send({ posts, hasMore: skip < length });
+      res.send({ posts, hasMore: skip + 3 < length });
     })
     .catch((error) => {
       console.log(error);

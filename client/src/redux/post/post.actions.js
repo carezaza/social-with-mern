@@ -126,10 +126,7 @@ export const FetchPostsProfileStart = (uid, page) => async (dispatch) => {
         type: PostActionTypes.FETCH_POSTS_PROFILE_SUCCESS,
         payload: res.data.posts,
       });
-      dispatch({
-        type: PostActionTypes.SET_HAS_MORE,
-        payload: res.data.hasMore,
-      });
+      dispatch(SetHasMore(res.data.hasMore));
     })
     .catch((error) => {
       dispatch({ type: PostActionTypes.FETCH_POSTS_PROFILE_FAILURE });
@@ -146,10 +143,8 @@ export const FetchPostsHomeStart = (page) => async (dispatch) => {
         type: PostActionTypes.FETCH_POSTS_HOME_SUCCESS,
         payload: res.data.posts,
       });
-      dispatch({
-        type: PostActionTypes.SET_HAS_MORE,
-        payload: res.data.hasMore,
-      });
+      console.log(res.data.hasMore)
+      dispatch(SetHasMore(res.data.hasMore));
     })
     .catch((error) => {
       dispatch({ type: PostActionTypes.FETCH_POSTS_HOME_FAILURE });
