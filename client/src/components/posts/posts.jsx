@@ -2,9 +2,19 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import CreatePost from "../create-post/create-post";
 import PostItem from "../post-item/post-item";
 import { connect } from "react-redux";
-import { FetchPostsHomeStart, ClearPosts, SetHasMore } from "../../redux/post/post.actions";
+import {
+  FetchPostsHomeStart,
+  ClearPosts,
+  SetHasMore,
+} from "../../redux/post/post.actions";
 
-const Posts = ({ FetchPostsHomeStart, posts, hasMore, ClearPosts, SetHasMore }) => {
+const Posts = ({
+  FetchPostsHomeStart,
+  posts,
+  hasMore,
+  ClearPosts,
+  SetHasMore,
+}) => {
   const [page, setPage] = useState(0);
 
   const load = useCallback(() => {
@@ -47,8 +57,8 @@ const Posts = ({ FetchPostsHomeStart, posts, hasMore, ClearPosts, SetHasMore }) 
     return () => {
       ClearPosts();
       SetHasMore(true);
-    }
-  },[ClearPosts,SetHasMore]);
+    };
+  }, [ClearPosts, SetHasMore]);
 
   return (
     <div
@@ -59,9 +69,10 @@ const Posts = ({ FetchPostsHomeStart, posts, hasMore, ClearPosts, SetHasMore }) 
       }}
     >
       <CreatePost />
-      {posts &&
-        posts.length > 0 &&
-        posts.map((post) => <PostItem key={post._id} post={post} />)}
+      
+      {posts.map((post) => (
+        <PostItem key={post._id} post={post} />
+      ))}
 
       {hasMore && (
         <div ref={setEl} style={{ margin: "10px  auto" }}>
@@ -77,4 +88,8 @@ const mapStateToProps = (state) => ({
   hasMore: state.postReducer.hasMore,
 });
 
-export default connect(mapStateToProps, { FetchPostsHomeStart,ClearPosts,SetHasMore })(Posts);
+export default connect(mapStateToProps, {
+  FetchPostsHomeStart,
+  ClearPosts,
+  SetHasMore,
+})(Posts);

@@ -2,7 +2,7 @@ const { checkFile } = require("../utils/file.utils");
 
 module.exports.isHasContent = (req, res, next) => {
   if (req.files === null && req.body === null) {
-    return res.status(400).json({ error: "No content posted." });
+    return res.status(400).send({ error: "No content posted." });
   }
   if (req.files) {
     if (req.files.photo) {

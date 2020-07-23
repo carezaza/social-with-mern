@@ -136,7 +136,6 @@ const PostItem = ({
     });
   }, [LikeSuccess, DeleteCommentSuccess, CommentSuccess]);
 
-  if (!post) return null;
   return (
     <Card className={classes.root}>
       <CardHeader
@@ -242,18 +241,16 @@ const PostItem = ({
 
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CreateComment postId={post._id} />
-        {post.comments.length > 0 && (
-          <List className={classes.ListStlye}>
-            {post.comments.map((comment) => (
-              <CommentItem
-                key={comment._id}
-                comment={comment}
-                postId={post._id}
-                postUser={post.user}
-              />
-            ))}
-          </List>
-        )}
+        <List className={classes.ListStlye}>
+          {post.comments.map((comment) => (
+            <CommentItem
+              key={comment._id}
+              comment={comment}
+              postId={post._id}
+              postUser={post.user}
+            />
+          ))}
+        </List>
       </Collapse>
     </Card>
   );

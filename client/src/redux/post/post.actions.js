@@ -11,13 +11,13 @@ export const CreatePostStart = (formData) => (dispatch) => {
         type: PostActionTypes.CREATE_POST_SUCCESS,
         payload: res.data,
       });
-      dispatch(
-        SetAlert({ message: "Created post successfully.", type: "success" })
-      );
+      // dispatch(
+      //   SetAlert({ message: "Created post successfully.", type: "success" })
+      // );
     })
     .catch((error) => {
       dispatch({ type: PostActionTypes.CREATE_POST_FAILURE });
-      dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
+      // dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
     });
 };
 
@@ -31,11 +31,11 @@ export const DeletePost = (postId) => (dispatch) => {
         type: PostActionTypes.DELETE_POST_SUCCESS,
         payload: postId,
       });
-      dispatch(SetAlert({ message: res.data.success, type: "success" }));
+      // dispatch(SetAlert({ message: res.data.success, type: "success" }));
     })
     .catch((error) => {
       dispatch({ type: PostActionTypes.DELETE_POST_FAILURE });
-      dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
+      // dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
     });
 };
 
@@ -50,11 +50,11 @@ export const LikeStart = (postId) => (dispatch) => {
       //   type: PostActionTypes.LIKE_POST_SUCCESS,
       //   payload: res.data,
       // });
-      dispatch(SetAlert({ message: res.data.success, type: "success" }));
+      // dispatch(SetAlert({ message: res.data.success, type: "success" }));
     })
     .catch((error) => {
       dispatch({ type: PostActionTypes.LIKE_POST_FAILURE });
-      dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
+    //   dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
     });
 };
 
@@ -75,11 +75,11 @@ export const CreateCommentStart = (postId, content) => (dispatch) => {
       //   type: PostActionTypes.CREAT_COMMENT_SUCCESS,
       //   payload: res.data,
       // });
-      dispatch(SetAlert({ message: res.data.success, type: "success" }));
+      // dispatch(SetAlert({ message: res.data.success, type: "success" }));
     })
     .catch((error) => {
       dispatch({ type: PostActionTypes.CREAT_COMMENT_FAILURE });
-      dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
+      // dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
     });
 };
 
@@ -99,11 +99,11 @@ export const DeleteComment = (postId, commentId) => (dispatch) => {
       //   type: PostActionTypes.DELETE_COMMENT_SUCCESS,
       //   payload: res.data,
       // });
-      dispatch(SetAlert({ message: res.data.success, type: "success" }));
+      // dispatch(SetAlert({ message: res.data.success, type: "success" }));
     })
     .catch((error) => {
       dispatch({ type: PostActionTypes.DELETE_COMMENT_FAILURE });
-      dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
+      // dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
     });
 };
 
@@ -130,7 +130,7 @@ export const FetchPostsProfileStart = (uid, page) => async (dispatch) => {
     })
     .catch((error) => {
       dispatch({ type: PostActionTypes.FETCH_POSTS_PROFILE_FAILURE });
-      dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
+      // dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
     });
 };
 
@@ -143,12 +143,11 @@ export const FetchPostsHomeStart = (page) => async (dispatch) => {
         type: PostActionTypes.FETCH_POSTS_HOME_SUCCESS,
         payload: res.data.posts,
       });
-      console.log(res.data.hasMore)
       dispatch(SetHasMore(res.data.hasMore));
     })
     .catch((error) => {
       dispatch({ type: PostActionTypes.FETCH_POSTS_HOME_FAILURE });
-      dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
+      // dispatch(SetAlert({ message: error.response.data.error, type: "error" }));
     });
 };
 
