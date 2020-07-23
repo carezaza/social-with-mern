@@ -23,7 +23,6 @@ import CommentItem from "../comment-item/comment-item";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import CreateComment from "../create-comment/create-comment";
 import DialogOkCancel from "../dialog-ok-cancel/dialog-ok-cancel";
-import { timeSince } from "../../utiles/time";
 import { connect } from "react-redux";
 import {
   DeletePost,
@@ -34,7 +33,10 @@ import {
 } from "../../redux/post/post.actions";
 import PeopleItem from "../people-item/people-item";
 import io from "socket.io-client";
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
 
+TimeAgo.addLocale(en)
 const socket = io("http://localhost:5000");
 
 const useStyles = makeStyles((theme) => ({
@@ -115,7 +117,9 @@ const PostItem = ({
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openDel, setOpenDel] = React.useState(false);
   const [openLike, setOpenLike] = React.useState(false);
-  const dateTime = timeSince(new Date(post.postedAt)).toString();
+  const timeAgo = new TimeAgo('en-US')
+  const dateTime = timeAgo.format(new Date(post.postedAt));
+
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };

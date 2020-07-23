@@ -14,9 +14,9 @@ import {
 } from "@material-ui/core/";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import DialogOkCancel from "../dialog-ok-cancel/dialog-ok-cancel";
-import { timeSince } from "../../utiles/time";
 import { connect } from "react-redux";
 import { DeleteComment } from "../../redux/post/post.actions";
+import TimeAgo from "javascript-time-ago";
 
 const LinkStyle = styled(Link)`
   text-decoration: none;
@@ -31,6 +31,8 @@ const LinkStyle = styled(Link)`
 const CommentItem = ({ postId, postUser, comment, auth, DeleteComment }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openDel, setOpenDel] = React.useState(false);
+  const timeAgo = new TimeAgo("en-US");
+  const dateTime = timeAgo.format(new Date(comment.commentedAt));
 
   const handleDelete = (commentId) => {
     DeleteComment(postId, commentId);
@@ -100,7 +102,7 @@ const CommentItem = ({ postId, postUser, comment, auth, DeleteComment }) => {
                   style={{ fontSize: 12, margin: "0 5px" }}
                   color="textSecondary"
                 >
-                  {timeSince(new Date(comment.commentedAt))}
+                  {dateTime}
                 </Typography>
               </div>
               {renderButtonDelete(auth.sub, postUser, comment.user)}{" "}
