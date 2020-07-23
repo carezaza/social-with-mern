@@ -70,14 +70,6 @@ const ProfileSchema = new Schema({
       },
     },
   ],
-  notifications: [
-    {
-      post: {
-        type: Schema.Types.ObjectId,
-        ref: "posts",
-      },
-    },
-  ],
   social: {
     youtube: {
       type: String,

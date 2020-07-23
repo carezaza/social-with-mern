@@ -34,7 +34,7 @@ export default (state = INITIAL_STATE, action) => {
     case PostActionTypes.CREATE_POST_SUCCESS:
       return {
         ...state,
-        posts: state.posts.unshift({ ...payload }),
+        posts: [payload, ...state.posts],
         isPending: false,
       };
     case PostActionTypes.DELETE_POST_SUCCESS:
@@ -75,7 +75,7 @@ export default (state = INITIAL_STATE, action) => {
         isPending: false,
         posts: state.posts.map((post) => {
           if (post._id === payload._id) {
-            return { ...payload };
+            return payload;
           }
           return post;
         }),

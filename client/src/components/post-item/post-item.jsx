@@ -35,7 +35,7 @@ import {
 import PeopleItem from "../people-item/people-item";
 import io from "socket.io-client";
 
-const socket = io("https://still-caverns-36517.herokuapp.com/");
+const socket = io("https://still-caverns-36517.herokuapp.com");
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,9 +62,7 @@ const useStyles = makeStyles((theme) => ({
   expandOpen: {
     transform: "rotate(180deg)",
   },
-  avatar: {
-    backgroundColor: "black",
-  },
+
   list: {
     display: "flex",
     flexDirection: "column",
@@ -136,7 +134,7 @@ const PostItem = ({
       if (action === "delete") DeleteCommentSuccess(p);
       if (action === "comment") CommentSuccess(p);
     });
-  }, [LikeSuccess,DeleteCommentSuccess,CommentSuccess]);
+  }, [LikeSuccess, DeleteCommentSuccess, CommentSuccess]);
 
   if (!post) return null;
   return (
@@ -146,7 +144,6 @@ const PostItem = ({
           <Avatar
             src={post.profile.avatar}
             alt={post.profile.firstName + " " + post.profile.lastName}
-            className={classes.avatar}
           />
         }
         title={

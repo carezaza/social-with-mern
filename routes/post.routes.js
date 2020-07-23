@@ -16,7 +16,12 @@ router.post("/create", isAuthenticated, isHasContent, async (req, res) => {
     const post = await PostModel.create({
       user: req.user.id,
       profile: req.profile.id,
-    });
+    })
+
+    if (req.content) {
+      post.content = req.content;
+    }
+
     if (req.photo) {
       const postPath = `${__dirname}/../client/public/uploads/posts/${post.id}`;
       if (!fs.existsSync(`${postPath}`)) {
@@ -25,25 +30,10 @@ router.post("/create", isAuthenticated, isHasContent, async (req, res) => {
       req.photo.mv(`${postPath}/post.png`);
       post.photo = `/uploads/posts/${post.id}/post.png`;
     }
-    if (req.content) {
-      post.content = req.content;
-    }
 
-    await ProfileModel.updateMany(
-      {
-        following: { $elemMatch: { user: req.user.id } },
-      },
-      { $push: { notifications: { $each: [{ post: post.id }] } } }
-    );
-
-    post
-      .save()
-      .then((p) =>
-        p
-          .populate("profile", ["avatar", "firstName", "lastName"])
-          .execPopulate()
-      )
-      .then((p) => res.send(p));
+    await post.save();
+    const p = await PostModel.findById(post.id).populate("profile", ["avatar", "firstName", "lastName"]);
+    res.send(p);
   } catch (error) {
     console.log(error);
     res.status(400).send({ error: error.message });
