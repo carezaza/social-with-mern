@@ -1,5 +1,7 @@
-const { config } = require("dotenv");
-config();
+if(process.env.NODE_ENV === 'development'){
+  require("dotenv").config();
+}
+
 const express = require("express");
 const useMiddleWares = require("./config/use-middleWares");
 const connectMongoDb = require("./config/mongoose");
