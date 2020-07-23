@@ -35,7 +35,7 @@ import {
 import PeopleItem from "../people-item/people-item";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://still-caverns-36517.herokuapp.com/");
 
 const useStyles = makeStyles((theme) => ({
   root: {
