@@ -16,7 +16,7 @@ router.post("/create", isAuthenticated, isHasContent, async (req, res) => {
     const post = await PostModel.create({
       user: req.user.id,
       profile: req.profile.id,
-    })
+    });
 
     if (req.content) {
       post.content = req.content;
@@ -32,7 +32,11 @@ router.post("/create", isAuthenticated, isHasContent, async (req, res) => {
     }
 
     await post.save();
-    const p = await PostModel.findById(post.id).populate("profile", ["avatar", "firstName", "lastName"]);
+    const p = await PostModel.findById(post.id).populate("profile", [
+      "avatar",
+      "firstName",
+      "lastName",
+    ]);
     res.send(p);
   } catch (error) {
     console.log(error);
@@ -100,11 +104,13 @@ router.post("/comment/:postId", isAuthenticated, async (req, res) => {
       ["firstName", "lastName", "avatar"]
     );
     if (!post) return res.status(400).send({ error: "Post not found." });
+
+    const { firstName, lastName } = req.profile;
     post.comments.push({
       user: req.user.id,
-      content: content,
-      firstName: req.profile.firstName,
-      lastName: req.profile.lastName,
+      content,
+      firstName,
+      lastName,
       avatar: req.profile.avatar,
     });
 

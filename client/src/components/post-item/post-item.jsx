@@ -35,7 +35,7 @@ import {
 import PeopleItem from "../people-item/people-item";
 import io from "socket.io-client";
 
-const socket = io("https://still-caverns-36517.herokuapp.com");
+const socket = io("http://localhost:5000");
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -115,6 +115,7 @@ const PostItem = ({
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openDel, setOpenDel] = React.useState(false);
   const [openLike, setOpenLike] = React.useState(false);
+  const dateTime = timeSince(new Date(post.postedAt)).toString();
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -152,7 +153,7 @@ const PostItem = ({
             </ButtonName>
           </Link>
         }
-        subheader={timeSince(new Date(post.postedAt))}
+        subheader={dateTime}
         action={
           post.user === auth.sub && (
             <Fragment>
@@ -201,19 +202,17 @@ const PostItem = ({
             <ButtonStyle aria-label="likes" onClick={() => setOpenLike(true)}>
               <Typography>{post.likes.length} Likes</Typography>{" "}
             </ButtonStyle>
-            {post.likes.length > 0 && (
-              <Modal
-                style={{ display: "flex", flexGrow: 1 }}
-                open={openLike}
-                onClose={() => setOpenLike(false)}
-              >
-                <List dense className={classes.list}>
-                  {post.likes.map((l) => (
-                    <PeopleItem key={l._id} profile={l} />
-                  ))}
-                </List>
-              </Modal>
-            )}
+            <Modal
+              style={{ display: "flex", flexGrow: 1 }}
+              open={openLike}
+              onClose={() => setOpenLike(false)}
+            >
+              <List dense className={classes.list}>
+                {post.likes.map((l) => (
+                  <PeopleItem key={l._id} profile={l} />
+                ))}
+              </List>
+            </Modal>
           </Fragment>
         )}
 
