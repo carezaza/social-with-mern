@@ -37,7 +37,7 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 
 TimeAgo.addLocale(en)
-const socket = io("https://still-caverns-36517.herokuapp.com/");
+const socket = io("https://social-with-mern.herokuapp.com/");
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -23,11 +23,11 @@ router.post("/create", isAuthenticated, isHasContent, async (req, res) => {
     }
 
     if (req.photo) {
-      const postPath = `${__dirname}/../client/public/uploads/posts/${post.id}`;
+      const postPath = `${__dirname}/../client/build/uploads/posts/${post.id}`;
       if (!fs.existsSync(`${postPath}`)) {
         fs.mkdirSync(`${postPath}`);
       }
-      req.photo.mv(`${postPath}/post.png`);
+      req.photo.mv(`${postPath}/post.png`); 
       post.photo = `/uploads/posts/${post.id}/post.png`;
     }
 
